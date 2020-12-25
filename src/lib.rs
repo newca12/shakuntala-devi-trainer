@@ -1,7 +1,7 @@
-use std::assert_eq;
 use chrono::prelude::*;
 use chrono::Duration;
 use num_traits::cast::FromPrimitive;
+use std::assert_eq;
 
 //https://stackoverflow.com/questions/6385190/correctness-of-sakamotos-algorithm-to-find-the-day-of-week
 pub fn tomohiko_sakamoto(dt: Date<Utc>) -> Weekday {
@@ -80,15 +80,15 @@ pub fn shakuntala_devi(dt: Date<Utc>) -> Weekday {
     //if is_leap_year(dt.year() && tmp.is
     //Weekday::from_i32(day % 7).unwrap().pred()
     //let day = if dt.year() < 1901 { day + 2 } else  { day };
-    
-    let resp = match Weekday::from_i32(day.rem_euclid(7))  {
+
+    let resp = match Weekday::from_i32(day.rem_euclid(7)) {
         Some(d) => d.pred(),
         None => {
-            println!("{:#?}",dt); 
+            println!("{:#?}", dt);
             Weekday::Fri
-        },
+        }
     };
-   resp
+    resp
 }
 
 #[test]
@@ -119,11 +119,6 @@ fn shakuntala_devi_unit_check() {
     fn is_leap_year(y: i32) -> bool {
         (y % 4 == 0) && (y % 100 != 0) || (y % 400 == 0)
     }
-    //let mut dt = Utc.ymd(2013, 9, 23); //OK
-    //let mut dt = Utc.ymd(1900, 1, 1); //KO
-    //let mut dt = Utc.ymd(1932, 4, 9); //OK
-    //let mut dt = Utc.ymd(1940, 7, 23); //OK
-    //let mut dt = Utc.ymd(1940, 1, 23);
     let mut dt = Utc.ymd(1928, 1, 7);
     println!("response {} {} ", dt.year(), dt.weekday());
     assert_eq!(shakuntala_devi(dt), dt.weekday());
