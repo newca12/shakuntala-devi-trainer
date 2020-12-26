@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/newca12/shakuntala-devi-trainer/workflows/Continuous%20integration/badge.svg)](https://github.com/newca12/shakuntala-devi-trainer/actions)
+
 ### About ###
 [Shakuntala Devi][1]'s trainer is a brain training tool. 
 
