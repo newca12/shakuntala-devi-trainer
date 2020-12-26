@@ -11,3 +11,4 @@ license = "GPL-3.0-or-later"
 [dependencies]
 chrono = "0.4"
 num-traits = "0.2.14"
+lazy_static = "1.4.0"

@@ -1,8 +1,39 @@
+#[macro_use]
+extern crate lazy_static;
 use chrono::prelude::*;
 #[cfg(test)]
 use chrono::Duration;
 use num_traits::cast::FromPrimitive;
 //use std::assert_eq;
+use std::collections::HashMap;
+
+lazy_static! {
+    static ref YEARS: HashMap<i32, i32> = {
+        const T3: [i32; 7] = [0, 5, 3, 1, 6, 4, 2];
+        let mut years = HashMap::new();
+        let mut cycled = T3.iter().cycle();
+        for year in (1584..1599).step_by(4) {
+            years.insert(year, 7 + *cycled.next().unwrap());
+        }
+        let mut cycled = T3.iter().cycle();
+        for year in (1600..1699).step_by(4) {
+            years.insert(year, 6 + *cycled.next().unwrap());
+        }
+        let mut cycled = T3.iter().cycle();
+        for year in (1700..1799).step_by(4) {
+            years.insert(year, 4 + *cycled.next().unwrap());
+        }
+        let mut cycled = T3.iter().cycle();
+        for year in (1800..1899).step_by(4) {
+            years.insert(year, 2 + *cycled.next().unwrap());
+        }
+        let mut cycled = T3.iter().cycle();
+        for year in (1900..10000).step_by(4) {
+            years.insert(year, *cycled.next().unwrap());
+        }
+        years
+    };
+}
 
 //https://stackoverflow.com/questions/6385190/correctness-of-sakamotos-algorithm-to-find-the-day-of-week
 pub fn tomohiko_sakamoto(dt: Date<Utc>) -> Weekday {
@@ -20,38 +51,16 @@ pub fn tomohiko_sakamoto(dt: Date<Utc>) -> Weekday {
 //https://brainly.in/question/19415705
 //https://fiat-knox.livejournal.com/1067226.html
 pub fn shakuntala_devi(dt: Date<Utc>) -> Weekday {
-    use std::collections::HashMap;
     //https://stackoverflow.com/questions/725098/leap-year-calculation
     //https://en.wikipedia.org/wiki/Leap_year#Algorithm
     fn is_leap_year(y: i32) -> bool {
         (y % 4 == 0) && (y % 100 != 0) || (y % 400 == 0)
     }
     const T2: [i32; 12] = [0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5];
-    const T3: [i32; 7] = [0, 5, 3, 1, 6, 4, 2];
-    let mut cycled = T3.iter().cycle();
-    let mut years = HashMap::new();
-    for year in (1584..1599).step_by(4) {
-        years.insert(year, 7 + *cycled.next().unwrap());
-    }
-    let mut cycled = T3.iter().cycle();
-    for year in (1600..1699).step_by(4) {
-        years.insert(year, 6 + *cycled.next().unwrap());
-    }
-    let mut cycled = T3.iter().cycle();
-    for year in (1700..1799).step_by(4) {
-        years.insert(year, 4 + *cycled.next().unwrap());
-    }
-    let mut cycled = T3.iter().cycle();
-    for year in (1800..1899).step_by(4) {
-        years.insert(year, 2 + *cycled.next().unwrap());
-    }
-    let mut cycled = T3.iter().cycle();
-    for year in (1900..10000).step_by(4) {
-        years.insert(year, *cycled.next().unwrap());
-    }
+
     let day = dt.day() % 7;
     let day = (day as i32 + T2[dt.month0() as usize]) % 7;
-    let t1 = years.get(&dt.year());
+    let t1 = YEARS.get(&dt.year());
     let day = match t1 {
         Some(result) => {
             if is_leap_year(dt.year()) {
@@ -65,7 +74,7 @@ pub fn shakuntala_devi(dt: Date<Utc>) -> Weekday {
                 while !is_leap_year(nearest_leap_year) {
                     nearest_leap_year -= 1;
                 }
-                day + years.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
+                day + YEARS.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
             }
         }
         None => {
@@ -73,7 +82,7 @@ pub fn shakuntala_devi(dt: Date<Utc>) -> Weekday {
             while !is_leap_year(nearest_leap_year) {
                 nearest_leap_year -= 1;
             }
-            day + years.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
+            day + YEARS.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
         }
     };
 
