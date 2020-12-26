@@ -1,7 +1,8 @@
 use chrono::prelude::*;
+#[cfg(test)]
 use chrono::Duration;
 use num_traits::cast::FromPrimitive;
-use std::assert_eq;
+//use std::assert_eq;
 
 //https://stackoverflow.com/questions/6385190/correctness-of-sakamotos-algorithm-to-find-the-day-of-week
 pub fn tomohiko_sakamoto(dt: Date<Utc>) -> Weekday {
@@ -20,7 +21,6 @@ pub fn tomohiko_sakamoto(dt: Date<Utc>) -> Weekday {
 //https://fiat-knox.livejournal.com/1067226.html
 pub fn shakuntala_devi(dt: Date<Utc>) -> Weekday {
     use std::collections::HashMap;
-    let y2 = dt.year();
     //https://stackoverflow.com/questions/725098/leap-year-calculation
     //https://en.wikipedia.org/wiki/Leap_year#Algorithm
     fn is_leap_year(y: i32) -> bool {
@@ -51,7 +51,6 @@ pub fn shakuntala_devi(dt: Date<Utc>) -> Weekday {
     }
     let day = dt.day() % 7;
     let day = (day as i32 + T2[dt.month0() as usize]) % 7;
-    let y = dt.year();
     let t1 = years.get(&dt.year());
     let day = match t1 {
         Some(result) => {
@@ -77,18 +76,14 @@ pub fn shakuntala_devi(dt: Date<Utc>) -> Weekday {
             day + years.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
         }
     };
-    //if is_leap_year(dt.year() && tmp.is
-    //Weekday::from_i32(day % 7).unwrap().pred()
-    //let day = if dt.year() < 1901 { day + 2 } else  { day };
 
-    let resp = match Weekday::from_i32(day.rem_euclid(7)) {
+    match Weekday::from_i32(day.rem_euclid(7)) {
         Some(d) => d.pred(),
         None => {
             println!("{:#?}", dt);
             Weekday::Fri
         }
-    };
-    resp
+    }
 }
 
 #[test]
@@ -116,10 +111,7 @@ fn shakuntala_devi_check() {
 
 #[test]
 fn shakuntala_devi_unit_check() {
-    fn is_leap_year(y: i32) -> bool {
-        (y % 4 == 0) && (y % 100 != 0) || (y % 400 == 0)
-    }
-    let mut dt = Utc.ymd(1928, 1, 7);
+    let dt = Utc.ymd(1928, 1, 7);
     println!("response {} {} ", dt.year(), dt.weekday());
     assert_eq!(shakuntala_devi(dt), dt.weekday());
 }
