@@ -1,10 +1,9 @@
 use chrono::prelude::*;
-use chrono::Duration;
 
 fn main() {
     println!("START");
-    let mut dt = Utc.ymd(1584, 1, 1);
-    while dt.year() < 10000 {
+    let calendar = NaiveDate::from_ymd(1584, 1, 1).iter_days();
+    for dt in calendar {
         if !(shakuntala_devi_trainer::shakuntala_devi(dt) == dt.weekday()) {
             println!(
                 "{:#?} find {} but should be {}",
@@ -14,6 +13,8 @@ fn main() {
             );
             break;
         }
-        dt = dt + Duration::days(1);
+        if dt.year() == 10000 {
+            break;
+        };
     }
 }
