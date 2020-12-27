@@ -1,7 +1,9 @@
 #[macro_use]
 extern crate lazy_static;
 use chrono::prelude::*;
+use chrono::Duration;
 use num_traits::cast::FromPrimitive;
+use rand::Rng;
 use std::collections::HashMap;
 
 lazy_static! {
@@ -61,13 +63,16 @@ pub fn tomohiko_sakamoto(dt: NaiveDate) -> Weekday {
 //https://www.youtube.com/watch?v=4LHzUkfQ8oE&t=534s
 //https://brainly.in/question/19415705
 //https://fiat-knox.livejournal.com/1067226.html
-pub fn shakuntala_devi(dt: NaiveDate) -> Weekday {
+pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, Vec<String>) {
+    let mut v: Vec<String> = Vec::new();
     const T2: [i32; 12] = [0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5];
     let day = dt.day() % 7;
     let day = (day as i32 + T2[dt.month0() as usize]) % 7;
+    v.push(format!("Step 1 is {}", day));
     let t1 = YEARS.get(&dt.year());
     let day = match t1 {
         Some(result) => {
+            v.push(format!("Step 2 is {:#?}", result));
             if is_leap_year(dt.year()) {
                 if dt.month() > 2 {
                     day + result
@@ -79,25 +84,30 @@ pub fn shakuntala_devi(dt: NaiveDate) -> Weekday {
                 while !is_leap_year(nearest_leap_year) {
                     nearest_leap_year -= 1;
                 }
+                v.push(format!("Step 3 is {:#?}", nearest_leap_year));
                 day + YEARS.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
             }
         }
         None => {
+            v.push("Step 2 is not in the year table".into());
             let mut nearest_leap_year = dt.year() - 1;
             while !is_leap_year(nearest_leap_year) {
                 nearest_leap_year -= 1;
             }
+            v.push(format!("Step 3 is {:#?}", nearest_leap_year));
             day + YEARS.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
         }
     };
 
-    match Weekday::from_i32(day.rem_euclid(7)) {
-        Some(d) => d.pred(),
-        None => {
-            println!("{:#?}", dt);
-            Weekday::Fri
-        }
-    }
+    (Weekday::from_i32(day.rem_euclid(7)).unwrap().pred(), v)
+}
+
+pub fn random_date() -> NaiveDate {
+    let start = NaiveDate::from_ymd(1583, 1, 1).num_days_from_ce();
+    let end = NaiveDate::from_ymd(2204, 1, 1).num_days_from_ce();
+    let days = rand::thread_rng().gen_range(1..end - start);
+    let dt = NaiveDate::from_ymd(1583, 1, 7);
+    dt + Duration::days(days as i64)
 }
 
 #[test]
@@ -115,7 +125,7 @@ fn tomohiko_sakamoto_check() {
 fn shakuntala_devi_check() {
     let calendar = NaiveDate::from_ymd(1584, 1, 1).iter_days();
     for dt in calendar {
-        assert_eq!(shakuntala_devi(dt), dt.weekday());
+        assert_eq!(shakuntala_devi(dt).0, dt.weekday());
         if dt.year() == 2204 {
             break;
         };
@@ -126,7 +136,7 @@ fn shakuntala_devi_check() {
 fn shakuntala_devi_unit_check() {
     let dt = NaiveDate::from_ymd(1928, 1, 7);
     println!("response {} {} ", dt.year(), dt.weekday());
-    assert_eq!(shakuntala_devi(dt), dt.weekday());
+    assert_eq!(shakuntala_devi(dt).0, dt.weekday());
 }
 #[test]
 fn leap_year_unit_check() {
