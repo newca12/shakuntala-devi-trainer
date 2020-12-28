@@ -5,7 +5,7 @@ use std::time::Instant;
 
 fn main() {
     let random_date = shakuntala_devi_trainer::random_date();
-    //let random_date = NaiveDate::from_ymd(2017, 12, 17);
+    //let random_date = NaiveDate::from_ymd(1940, 1, 23);
     let (shakuntala_devi_answer, tips) = shakuntala_devi_trainer::shakuntala_devi(random_date);
     let mut tips = tips.iter();
     if shakuntala_devi_answer != random_date.weekday() {
@@ -26,8 +26,9 @@ fn main() {
             Ok(num) => num, //{ if (0..7).contains(num) { num } else { continue } },
             Err(_) => continue,
         };
-        println!("Your answer is {}", Weekday::from_u32(guess).unwrap());
-        if guess == shakuntala_devi_answer.num_days_from_monday() {
+        let guess = Weekday::from_u32(guess).unwrap().pred();
+        println!("Your answer is {}", guess);
+        if guess == shakuntala_devi_answer {
             println!("Congratulation !");
             break;
         } else {

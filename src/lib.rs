@@ -84,17 +84,24 @@ pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, Vec<String>) {
                 while !is_leap_year(nearest_leap_year) {
                     nearest_leap_year -= 1;
                 }
-                v.push(format!("Step 3 is {:#?}", nearest_leap_year));
+                v.push(format!("Step 2 is {:#?}", nearest_leap_year));
+                v.push(format!(
+                    "Step 3 is {:#?}",
+                    YEARS.get(&nearest_leap_year).unwrap()
+                ));
                 day + YEARS.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
             }
         }
         None => {
-            v.push("Step 2 is not in the year table".into());
             let mut nearest_leap_year = dt.year() - 1;
             while !is_leap_year(nearest_leap_year) {
                 nearest_leap_year -= 1;
             }
-            v.push(format!("Step 3 is {:#?}", nearest_leap_year));
+            v.push(format!("Step 2 is {:#?}", nearest_leap_year));
+            v.push(format!(
+                "Step 3 is {:#?}",
+                YEARS.get(&nearest_leap_year).unwrap()
+            ));
             day + YEARS.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
         }
     };
