@@ -12,8 +12,30 @@ shakuntala-devi-trainer is an EDLA project.
 
 The purpose of [edla.org](http://www.edla.org) is to promote the state of the art in various domains.
 
+### Usage ###
+The goal is to determine [the day of the week](https://en.wikipedia.org/wiki/Determination_of_the_day_of_the_week) for a given date.  
+The technic used by Shakuntala Devi is describe in her book [Figuring the Joy of Numbers](https://www.amazon.com/gp/product/8122200389).  
+You can see an overview in Tibee's video [India's Human Computer](https://www.youtube.com/watch?v=4LHzUkfQ8oE&t=534s) or in this livejournal [entry](https://fiat-knox.livejournal.com/1067226.html) 
 
+Your answer should be encoded as an integer like described in the book like so :
+* Sunday 0
+* Monday 1
+* Tuesday 2
+* Wednesday 3
+* Thursday 4
+* Friday 5
+* Saturday 6
 
+If your answer is wrong the program will give you a hint.  
+Each hint is the result of a step of Shakuntala Devi's algorithm
+
+### Developer Notes ###
+* [Modulo of negative numbers shows languages in two different camps.](https://torstencurdt.com/tech/posts/modulo-of-negative-numbers)  
+* Rust conveniently allow infinite lazy stream with iterator
+* num-traits is required for Weekday::from_u32
+* lazy_static is required to provide a singleton HashMap
+* [By default Rust test programs hide the stdout of successful tests](https://stackoverflow.com/a/25107081)
+* [Rust built-in test framework does not support parameterized tests](https://stackoverflow.com/questions/34662713/how-can-i-create-parameterized-tests-in-rust)
 ### License ###
 © 2020-2021 Olivier ROLAND. Distributed under the GPLv3 License.
 
