@@ -102,6 +102,23 @@ pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, Vec<String>) {
     (Weekday::from_i32(day.rem_euclid(7)).unwrap().pred(), v)
 }
 
+//http://mathforum.org/library/drmath/view/62324.html
+//https://medium.com/explorations-in-python/calculating-the-day-of-the-week-with-zellers-congruence-in-python-8009001dd84e
+pub fn zeller(dt: NaiveDate) -> Weekday {
+    let mut year = dt.year();
+    let mut month = dt.month();
+    if dt.month() < 3 {
+        month += 12;
+        year -= 1;
+    }
+    Weekday::from_i32(
+        (dt.day() as i32 - 2 + (13 * (month + 1) / 5) as i32 + year + year / 4 - year / 100
+            + year / 400)
+            % 7,
+    )
+    .unwrap()
+}
+
 pub fn random_date() -> NaiveDate {
     let start = NaiveDate::from_ymd(1583, 1, 1).num_days_from_ce();
     let end = NaiveDate::from_ymd(2204, 1, 1).num_days_from_ce();
@@ -127,6 +144,24 @@ fn shakuntala_devi_check() {
     for dt in calendar {
         assert_eq!(shakuntala_devi(dt).0, dt.weekday());
         if dt.year() == 2204 {
+            break;
+        };
+    }
+}
+
+#[test]
+fn zeller_unit_check() {
+    let dt = NaiveDate::from_ymd(1928, 1, 7);
+    println!("response {} {} ", dt.year(), dt.weekday());
+    assert_eq!(zeller(dt), dt.weekday());
+}
+
+#[test]
+fn zeller_check() {
+    let calendar = NaiveDate::from_ymd(1584, 1, 1).iter_days();
+    for dt in calendar {
+        assert_eq!(zeller(dt), dt.weekday());
+        if dt.year() == 10000 {
             break;
         };
     }
