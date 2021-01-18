@@ -5,6 +5,9 @@
 [![Documentation](https://docs.rs/shakuntala-devi-trainer/badge.svg)](https://docs.rs/shakuntala-devi-trainer)
 [![](https://tokei.rs/b1/github/newca12/shakuntala-devi-trainer)](https://github.com/newca12/shakuntala-devi-trainer)
 [![Crates.io](https://img.shields.io/crates/l/shakuntala-devi-trainer.svg)](https://github.com/newca12/shakuntala-devi-trainer/blob/main/LICENSE)
+
+![Image](./screenshot.png?raw=true)
+
 ### About ###
 [Shakuntala Devi][1]'s trainer is a brain training tool. 
 
