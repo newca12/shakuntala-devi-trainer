@@ -20,7 +20,17 @@ The goal is to determine [the day of the week](https://en.wikipedia.org/wiki/Det
 The technic used by Shakuntala Devi is describe in her book [Figuring the Joy of Numbers](https://www.amazon.com/gp/product/8122200389).  
 You can see an overview in Tibee's video [India's Human Computer](https://www.youtube.com/watch?v=4LHzUkfQ8oE&t=534s) or in this livejournal [entry](https://fiat-knox.livejournal.com/1067226.html) 
 
-Your answer should be encoded as an integer like described in the book like so :
+To launch the GUI 
+```
+cargo run
+``` 
+
+To launch the text console version
+```
+cargo run -- --cli
+```
+
+If you use the console version your answer should be encoded as an integer like described in the book like so :
 * Sunday 0
 * Monday 1
 * Tuesday 2
@@ -29,7 +39,7 @@ Your answer should be encoded as an integer like described in the book like so :
 * Friday 5
 * Saturday 6
 
-If your answer is wrong the program will give you a hint.  
+If your answer is wrong only the text console version will give you a hint for now.  
 Each hint is the result of a step of Shakuntala Devi's algorithm
 
 ### Developer Notes ###

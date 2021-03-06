@@ -1,30 +1,35 @@
 use chrono::prelude::*;
 use chrono::NaiveDate;
 use iced::{
-    button, text_input, Align, Button, Column, Container, Element, HorizontalAlignment, Length,
-    Sandbox, Settings, Text, TextInput,
+    button, Align, Button, Column, Container, Element, HorizontalAlignment, Length, Row, Sandbox,
+    Settings, Text,
 };
 
 pub fn run_gui() {
     let mut settings = Settings::default();
-    settings.window.size = (400u32, 300u32);
+    settings.window.size = (600u32, 300u32);
     ShakuntalaDeviTrainer::run(settings).unwrap();
 }
 
-#[derive(Debug, Default)]
+//Weekday does not implement Default so we can(t derive Default)
+#[derive(Debug)]
 struct ShakuntalaDeviTrainer {
     reset: button::State,
-    input: text_input::State,
-    input_value: String,
+    monday: button::State,
+    tuesday: button::State,
+    wednesday: button::State,
+    thursday: button::State,
+    friday: button::State,
+    saturday: button::State,
+    sunday: button::State,
     random_date: String,
-    week_day: u32,
+    week_day: Weekday,
     hint: String,
 }
 
 #[derive(Debug, Clone)]
 enum Message {
-    InputChanged(String),
-    InputOnSubmit,
+    GuessDay(Weekday),
     Reset,
 }
 
@@ -41,10 +46,17 @@ impl Sandbox for ShakuntalaDeviTrainer {
     fn new() -> Self {
         let (random_date, shakuntala_devi_answer, _tips) = generate_random_value();
         Self {
+            reset: button::State::new(),
+            monday: button::State::new(),
+            tuesday: button::State::new(),
+            wednesday: button::State::new(),
+            thursday: button::State::new(),
+            friday: button::State::new(),
+            saturday: button::State::new(),
+            sunday: button::State::new(),
             random_date: random_date.to_string(),
-            week_day: shakuntala_devi_answer.num_days_from_sunday(),
+            week_day: shakuntala_devi_answer,
             hint: "Guess the day!".to_string(),
-            ..Self::default()
         }
     }
 
@@ -54,28 +66,19 @@ impl Sandbox for ShakuntalaDeviTrainer {
 
     fn update(&mut self, message: Self::Message) {
         match message {
-            Message::InputChanged(value) => self.input_value = value,
-
-            Message::InputOnSubmit => {
-                if self.input_value.parse::<u32>().is_ok() {
-                    let input_val: u32 = self.input_value.parse().unwrap();
-
-                    let result = if input_val == self.week_day {
-                        "Congratulation !"
-                    } else {
-                        "Try again"
-                    };
-
-                    self.hint = result.to_string();
+            Message::GuessDay(guess_day) => {
+                let result = if guess_day == self.week_day {
+                    "Congratulation !"
                 } else {
-                    self.hint = "type a number...".to_string();
-                }
+                    "Try again"
+                };
+
+                self.hint = result.to_string();
             }
 
             Message::Reset => {
                 let (random_date, shakuntala_devi_answer, _tips) = generate_random_value();
-                self.week_day = shakuntala_devi_answer.num_days_from_sunday();
-                self.input_value = String::new();
+                self.week_day = shakuntala_devi_answer;
                 self.random_date = random_date.to_string();
                 self.hint = "Guess the day!".to_string();
             }
@@ -96,20 +99,96 @@ impl Sandbox for ShakuntalaDeviTrainer {
             )
             .padding(16);
 
-        let text_input = Column::new()
+        let monday_button = Column::new()
             .push(
-                TextInput::new(
-                    &mut self.input,
-                    "type number (0 Sunday, 1 Monday, ...) and press enter",
-                    &self.input_value,
-                    Message::InputChanged,
+                Button::new(
+                    &mut self.monday,
+                    Text::new("Monday")
+                        .horizontal_alignment(HorizontalAlignment::Center)
+                        .size(16),
                 )
                 .padding(8)
-                .size(18)
-                .on_submit(Message::InputOnSubmit),
+                .on_press(Message::GuessDay(Weekday::Mon)),
             )
-            .padding(16)
-            .max_width(395);
+            .padding(1);
+
+        let tuesday_button = Column::new()
+            .push(
+                Button::new(
+                    &mut self.tuesday,
+                    Text::new("Tuesday")
+                        .horizontal_alignment(HorizontalAlignment::Center)
+                        .size(16),
+                )
+                .padding(8)
+                .on_press(Message::GuessDay(Weekday::Tue)),
+            )
+            .padding(1);
+
+        let wednesday_button = Column::new()
+            .push(
+                Button::new(
+                    &mut self.wednesday,
+                    Text::new("Wednesday")
+                        .horizontal_alignment(HorizontalAlignment::Center)
+                        .size(16),
+                )
+                .padding(8)
+                .on_press(Message::GuessDay(Weekday::Wed)),
+            )
+            .padding(1);
+
+        let thursday_button = Column::new()
+            .push(
+                Button::new(
+                    &mut self.thursday,
+                    Text::new("Thursday")
+                        .horizontal_alignment(HorizontalAlignment::Center)
+                        .size(16),
+                )
+                .padding(8)
+                .on_press(Message::GuessDay(Weekday::Thu)),
+            )
+            .padding(1);
+
+        let friday_button = Column::new()
+            .push(
+                Button::new(
+                    &mut self.friday,
+                    Text::new("Friday")
+                        .horizontal_alignment(HorizontalAlignment::Center)
+                        .size(16),
+                )
+                .padding(8)
+                .on_press(Message::GuessDay(Weekday::Fri)),
+            )
+            .padding(1);
+
+        let saturday_button = Column::new()
+            .push(
+                Button::new(
+                    &mut self.saturday,
+                    Text::new("Saturday")
+                        .horizontal_alignment(HorizontalAlignment::Center)
+                        .size(16),
+                )
+                .padding(8)
+                .on_press(Message::GuessDay(Weekday::Sat)),
+            )
+            .padding(1);
+
+        let sunday_button = Column::new()
+            .push(
+                Button::new(
+                    &mut self.sunday,
+                    Text::new("Sunday")
+                        .horizontal_alignment(HorizontalAlignment::Center)
+                        .size(16),
+                )
+                .padding(8)
+                .on_press(Message::GuessDay(Weekday::Sun)),
+            )
+            .padding(1);
 
         let resut = Column::new()
             .push(Text::new(&self.hint).size(48))
@@ -119,10 +198,19 @@ impl Sandbox for ShakuntalaDeviTrainer {
             .push(Text::new(&self.random_date).size(48))
             .padding(8);
 
+        let weekday = Row::new()
+            .push(monday_button)
+            .push(tuesday_button)
+            .push(wednesday_button)
+            .push(thursday_button)
+            .push(friday_button)
+            .push(saturday_button)
+            .push(sunday_button);
+
         let content = Column::new()
             .push(reset_button)
             .push(random_date)
-            .push(text_input)
+            .push(weekday)
             .push(resut)
             .align_items(Align::Center);
 
