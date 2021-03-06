@@ -2239,7 +2239,7 @@ dependencies = [
 
 [[package]]
 name = "shakuntala-devi-trainer"
-version = "0.1.3"
+version = "0.1.4-alpha.0"
 dependencies = [
  "chrono",
  "iced",
