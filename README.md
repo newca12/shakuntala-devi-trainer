@@ -9,7 +9,7 @@
 ![Image](./screenshot.png?raw=true)
 
 ### About ###
-[Shakuntala Devi][1]'s trainer is a brain training tool available as a GUI, a text console version and also an experimental [online](2) version thank to the cross platform GUI library [Iced](https://github.com/hecrj/iced).
+[Shakuntala Devi][1]'s trainer is a brain training tool available as a GUI, a text console version and also an experimental [online][2] version thank to the cross platform GUI library [Iced](https://github.com/hecrj/iced).
 
 shakuntala-devi-trainer is an EDLA project.
 
@@ -43,7 +43,7 @@ If your answer is wrong only the text console version will give you a hint for n
 Each hint is the result of a step of Shakuntala Devi's algorithm
 
 ### Web version ###
-You can try the experimental online version [shakuntala-devi-trainer](2)
+You can try the experimental online version [shakuntala-devi-trainer][2]
 or built it yourself :  
 ```
 rustup target add wasm32-unknown-unknown
