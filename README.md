@@ -9,7 +9,7 @@
 ![Image](./screenshot.png?raw=true)
 
 ### About ###
-[Shakuntala Devi][1]'s trainer is a brain training tool. 
+[Shakuntala Devi][1]'s trainer is a brain training tool available as a GUI, a text console version and also an experimental [online](2) version thank to the cross platform GUI library [Iced](https://github.com/hecrj/iced).
 
 shakuntala-devi-trainer is an EDLA project.
 
@@ -42,6 +42,16 @@ If you use the console version your answer should be encoded as an integer like 
 If your answer is wrong only the text console version will give you a hint for now.  
 Each hint is the result of a step of Shakuntala Devi's algorithm
 
+### Web version ###
+You can try the experimental online version [shakuntala-devi-trainer](2)
+or built it yourself :  
+```
+rustup target add wasm32-unknown-unknown
+cargo install wasm-bindgen-cli
+wasm-bindgen target/wasm32-unknown-unknown/debug/shakuntala-devi-trainer.wasm --out-dir shakuntala-devi-trainer  --web
+```
+
+
 ### Developer Notes ###
 * [Modulo of negative numbers shows languages in two different camps.](https://torstencurdt.com/tech/posts/modulo-of-negative-numbers)  
 * Rust conveniently allow infinite lazy stream with iterator
@@ -49,7 +59,9 @@ Each hint is the result of a step of Shakuntala Devi's algorithm
 * lazy_static is required to provide a singleton HashMap
 * [By default Rust test programs hide the stdout of successful tests](https://stackoverflow.com/a/25107081)
 * [Rust built-in test framework does not support parameterized tests](https://stackoverflow.com/questions/34662713/how-can-i-create-parameterized-tests-in-rust)
+
 ### License ###
 © 2020-2021 Olivier ROLAND. Distributed under the GPLv3 License.
 
 [1]: https://en.wikipedia.org/wiki/Shakuntala_Devi
+[2]: https://edla.org/shakuntala-devi-trainer

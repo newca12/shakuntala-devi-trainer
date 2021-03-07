@@ -13,5 +13,7 @@ chrono = "0.4"
 num-traits = "0.2.14"
 lazy_static = "1.4.0"
 rand = "0.8.0"
+getrandom = { version = "0.2.2", features = ["js"] }
 iced = { version = "0.2.0", features = ["glow", "debug"] }
+iced_web = "0.3"
 structopt = "0.3.21"
