@@ -4,6 +4,7 @@ use iced::{
     button, Align, Button, Column, Container, Element, HorizontalAlignment, Length, Row, Sandbox,
     Settings, Text,
 };
+use num_traits::cast::FromPrimitive;
 
 pub fn run_gui() {
     let mut settings = Settings::default();
@@ -73,11 +74,8 @@ impl Sandbox for ShakuntalaDeviTrainer {
                 let result = if guess_day == self.week_day {
                     let tries = self.already_pressed.len();
                     //enum are not iterable https://github.com/rust-lang/rfcs/issues/284
-                    let mut iter_week = Weekday::Mon;
-                    self.already_pressed.push(iter_week);
-                    while iter_week != Weekday::Sun {
-                        iter_week = iter_week.succ();
-                        self.already_pressed.push(iter_week);
+                    for n in 0..=6 {
+                        self.already_pressed.push(Weekday::from_u32(n).unwrap());
                     }
                     format!(
                         "Congratulation ! You found {} after {} guess",
