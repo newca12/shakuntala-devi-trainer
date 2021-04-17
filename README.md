@@ -40,7 +40,9 @@ If you use the console version your answer should be encoded as an integer like 
 * Saturday 6
 
 If your answer is wrong only the text console version will give you a hint for now.  
-Each hint is the result of a step of Shakuntala Devi's algorithm
+Each hint is the result of a step of Shakuntala Devi's algorithm.
+
+You can adjust the range of the random date with two handy sliders.
 
 ### Web version ###
 You can try the experimental online version [shakuntala-devi-trainer][2]

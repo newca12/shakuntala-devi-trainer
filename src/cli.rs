@@ -17,9 +17,11 @@ pub fn parse_cli() -> bool {
 }
 
 pub fn run_cli() {
-    let random_date = shakuntala_devi_trainer::random_date();
-    //let random_date = NaiveDate::from_ymd(1940, 1, 23);
-    let (shakuntala_devi_answer, tips) = shakuntala_devi_trainer::shakuntala_devi(random_date);
+    let (random_date, shakuntala_devi_answer, tips) =
+        shakuntala_devi_trainer::random_date_with_tips(
+            shakuntala_devi_trainer::DEFAULT_FIRST_YEAR,
+            shakuntala_devi_trainer::DEFAULT_LAST_YEAR,
+        );
     let mut tips = tips.iter();
     if shakuntala_devi_answer != random_date.weekday() {
         println!("Shakuntala Devi cannot found the day of {:#?}", random_date);

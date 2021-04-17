@@ -4,7 +4,15 @@ use chrono::prelude::*;
 use chrono::Duration;
 use num_traits::cast::FromPrimitive;
 use rand::Rng;
-use std::collections::{HashMap, VecDeque};
+use std::{
+    collections::{HashMap, VecDeque},
+    convert::TryInto,
+};
+
+pub const MIN_YEAR: u32 = 1583;
+pub const MAX_YEAR: u32 = 2204;
+pub const DEFAULT_FIRST_YEAR: u32 = 1932;
+pub const DEFAULT_LAST_YEAR: u32 = 2032;
 
 lazy_static! {
     static ref YEARS: HashMap<i32, i32> = {
@@ -126,12 +134,22 @@ pub fn zeller(dt: NaiveDate) -> Weekday {
     .unwrap()
 }
 
-pub fn random_date() -> NaiveDate {
-    let start = NaiveDate::from_ymd(1583, 1, 1).num_days_from_ce();
-    let end = NaiveDate::from_ymd(2204, 1, 1).num_days_from_ce();
+pub fn random_date(from_year: u32, to_year: u32) -> NaiveDate {
+    let start = NaiveDate::from_ymd(from_year.try_into().unwrap(), 1, 1).num_days_from_ce();
+    let end = NaiveDate::from_ymd(to_year.try_into().unwrap(), 1, 1).num_days_from_ce();
     let days = rand::thread_rng().gen_range(1..end - start);
-    let dt = NaiveDate::from_ymd(1583, 1, 7);
+    let dt = NaiveDate::from_ymd(from_year.try_into().unwrap(), 1, 7);
     dt + Duration::days(days as i64)
+}
+
+pub fn random_date_with_tips(
+    from_year: u32,
+    to_year: u32,
+) -> (NaiveDate, Weekday, VecDeque<String>) {
+    let random_date = random_date(from_year, to_year);
+    //let random_date = NaiveDate::from_ymd(1940, 1, 23);
+    let (shakuntala_devi_answer, tips) = shakuntala_devi(random_date);
+    (random_date, shakuntala_devi_answer, tips)
 }
 
 #[test]

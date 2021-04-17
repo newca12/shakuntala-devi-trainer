@@ -1,10 +1,9 @@
 use std::collections::VecDeque;
 
 use chrono::prelude::*;
-use chrono::NaiveDate;
 use iced::{
-    button, Align, Button, Column, Container, Element, HorizontalAlignment, Length, Row, Sandbox,
-    Settings, Text,
+    button, slider, Align, Button, Column, Container, Element, HorizontalAlignment, Length, Row,
+    Sandbox, Settings, Slider, Text,
 };
 use num_traits::cast::FromPrimitive;
 
@@ -17,6 +16,10 @@ pub fn run_gui() {
 //Weekday does not implement Default so we can(t derive Default)
 #[derive(Debug)]
 struct ShakuntalaDeviTrainer {
+    first_year_slider: slider::State,
+    first_year: u32,
+    last_year_slider: slider::State,
+    last_year: u32,
     reset: button::State,
     monday: button::State,
     tuesday: button::State,
@@ -36,21 +39,24 @@ struct ShakuntalaDeviTrainer {
 enum Message {
     GuessDay(Weekday),
     Reset,
-}
-
-fn generate_random_value() -> (NaiveDate, Weekday, VecDeque<String>) {
-    let random_date = shakuntala_devi_trainer::random_date();
-    //let random_date = NaiveDate::from_ymd(1940, 1, 23);
-    let (shakuntala_devi_answer, tips) = shakuntala_devi_trainer::shakuntala_devi(random_date);
-    (random_date, shakuntala_devi_answer, tips)
+    FirstYear(u32),
+    LastYear(u32),
 }
 
 impl Sandbox for ShakuntalaDeviTrainer {
     type Message = Message;
 
     fn new() -> Self {
-        let (random_date, shakuntala_devi_answer, tips) = generate_random_value();
+        let (random_date, shakuntala_devi_answer, tips) =
+            shakuntala_devi_trainer::random_date_with_tips(
+                shakuntala_devi_trainer::DEFAULT_FIRST_YEAR,
+                shakuntala_devi_trainer::DEFAULT_LAST_YEAR,
+            );
         Self {
+            first_year_slider: slider::State::new(),
+            first_year: shakuntala_devi_trainer::DEFAULT_FIRST_YEAR,
+            last_year_slider: slider::State::new(),
+            last_year: shakuntala_devi_trainer::DEFAULT_LAST_YEAR,
             reset: button::State::new(),
             monday: button::State::new(),
             tuesday: button::State::new(),
@@ -62,7 +68,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
             random_date: random_date.to_string(),
             week_day: shakuntala_devi_answer,
             already_pressed: Vec::new(),
-            tips: tips,
+            tips,
             hint: "Guess the day!".to_string(),
         }
     }
@@ -89,19 +95,32 @@ impl Sandbox for ShakuntalaDeviTrainer {
                 } else {
                     match self.tips.pop_front() {
                         Some(tips) => format!("tips: {:#?}", tips),
-                        None => format!("Sorry, no more tips"),
+                        None => "Sorry, no more tips".to_string(),
                     }
                 };
                 self.hint = result;
             }
 
             Message::Reset => {
-                let (random_date, shakuntala_devi_answer, tips) = generate_random_value();
+                let (random_date, shakuntala_devi_answer, tips) =
+                    shakuntala_devi_trainer::random_date_with_tips(self.first_year, self.last_year);
                 self.week_day = shakuntala_devi_answer;
                 self.random_date = random_date.to_string();
                 self.tips = tips;
                 self.hint = "Guess the day!".to_string();
                 self.already_pressed = Vec::new();
+            }
+
+            Message::FirstYear(first_year) => {
+                if first_year < self.last_year {
+                    self.first_year = first_year;
+                }
+            }
+
+            Message::LastYear(last_year) => {
+                if last_year > self.first_year {
+                    self.last_year = last_year;
+                }
             }
         }
     }
@@ -151,6 +170,32 @@ impl Sandbox for ShakuntalaDeviTrainer {
             .push(Text::new(&self.random_date).size(48))
             .padding(8);
 
+        let first_year = Column::new()
+            .push(Text::new(&self.first_year.to_string()).size(12))
+            .padding(0);
+
+        let last_year = Column::new()
+            .push(Text::new(&self.last_year.to_string()).size(12))
+            .padding(0);
+
+        let first_year_slider = Column::new()
+            .push(Slider::new(
+                &mut self.first_year_slider,
+                shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,
+                self.first_year,
+                Message::FirstYear,
+            ))
+            .padding(0);
+
+        let last_year_slider = Column::new()
+            .push(Slider::new(
+                &mut self.last_year_slider,
+                shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,
+                self.last_year,
+                Message::LastYear,
+            ))
+            .padding(0);
+
         let weekday = Row::new()
             .push(column(
                 &mut self.monday,
@@ -196,6 +241,10 @@ impl Sandbox for ShakuntalaDeviTrainer {
             ));
 
         let content = Column::new()
+            .push(first_year_slider)
+            .push(first_year)
+            .push(last_year_slider)
+            .push(last_year)
             .push(reset_button)
             .push(random_date)
             .push(weekday)
