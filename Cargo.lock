@@ -2370,7 +2370,7 @@ dependencies = [
 
 [[package]]
 name = "shakuntala-devi-trainer"
-version = "0.1.6-alpha.0"
+version = "1.0.0"
 dependencies = [
  "chrono",
  "getrandom 0.2.2",
