@@ -4,7 +4,7 @@ use chrono::prelude::*;
 use chrono::Duration;
 use num_traits::cast::FromPrimitive;
 use rand::Rng;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 
 lazy_static! {
     static ref YEARS: HashMap<i32, i32> = {
@@ -63,16 +63,16 @@ pub fn tomohiko_sakamoto(dt: NaiveDate) -> Weekday {
 //https://www.youtube.com/watch?v=4LHzUkfQ8oE&t=534s
 //https://brainly.in/question/19415705
 //https://fiat-knox.livejournal.com/1067226.html
-pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, Vec<String>) {
-    let mut v: Vec<String> = Vec::new();
+pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, VecDeque<String>) {
+    let mut v: VecDeque<String> = VecDeque::new();
     const T2: [i32; 12] = [0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5];
     let day = dt.day() % 7;
     let day = (day as i32 + T2[dt.month0() as usize]) % 7;
-    v.push(format!("Step 1 is {}", day));
+    v.push_back(format!("Step 1 is {}", day));
     let t1 = YEARS.get(&dt.year());
     let day = match t1 {
         Some(result) => {
-            v.push(format!("Step 2 is {:#?}", result));
+            v.push_back(format!("Step 2 is {:#?}", result));
             if is_leap_year(dt.year()) {
                 if dt.month() > 2 {
                     day + result
@@ -84,8 +84,8 @@ pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, Vec<String>) {
                 while !is_leap_year(nearest_leap_year) {
                     nearest_leap_year -= 1;
                 }
-                v.push(format!("Step 2 is {:#?}", nearest_leap_year));
-                v.push(format!(
+                v.push_back(format!("Step 2 is {:#?}", nearest_leap_year));
+                v.push_back(format!(
                     "Step 3 is {:#?}",
                     YEARS.get(&nearest_leap_year).unwrap()
                 ));
@@ -97,8 +97,8 @@ pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, Vec<String>) {
             while !is_leap_year(nearest_leap_year) {
                 nearest_leap_year -= 1;
             }
-            v.push(format!("Step 2 is {:#?}", nearest_leap_year));
-            v.push(format!(
+            v.push_back(format!("Step 2 is {:#?}", nearest_leap_year));
+            v.push_back(format!(
                 "Step 3 is {:#?}",
                 YEARS.get(&nearest_leap_year).unwrap()
             ));

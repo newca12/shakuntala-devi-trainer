@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use chrono::prelude::*;
 use chrono::NaiveDate;
 use iced::{
@@ -26,6 +28,7 @@ struct ShakuntalaDeviTrainer {
     random_date: String,
     week_day: Weekday,
     already_pressed: Vec<Weekday>,
+    tips: VecDeque<String>,
     hint: String,
 }
 
@@ -35,7 +38,7 @@ enum Message {
     Reset,
 }
 
-fn generate_random_value() -> (NaiveDate, Weekday, Vec<String>) {
+fn generate_random_value() -> (NaiveDate, Weekday, VecDeque<String>) {
     let random_date = shakuntala_devi_trainer::random_date();
     //let random_date = NaiveDate::from_ymd(1940, 1, 23);
     let (shakuntala_devi_answer, tips) = shakuntala_devi_trainer::shakuntala_devi(random_date);
@@ -46,7 +49,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
     type Message = Message;
 
     fn new() -> Self {
-        let (random_date, shakuntala_devi_answer, _tips) = generate_random_value();
+        let (random_date, shakuntala_devi_answer, tips) = generate_random_value();
         Self {
             reset: button::State::new(),
             monday: button::State::new(),
@@ -59,6 +62,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
             random_date: random_date.to_string(),
             week_day: shakuntala_devi_answer,
             already_pressed: Vec::new(),
+            tips: tips,
             hint: "Guess the day!".to_string(),
         }
     }
@@ -83,16 +87,19 @@ impl Sandbox for ShakuntalaDeviTrainer {
                         tries
                     )
                 } else {
-                    "Try again".to_string()
+                    match self.tips.pop_front() {
+                        Some(tips) => format!("tips: {:#?}", tips),
+                        None => format!("Sorry, no more tips"),
+                    }
                 };
-
                 self.hint = result;
             }
 
             Message::Reset => {
-                let (random_date, shakuntala_devi_answer, _tips) = generate_random_value();
+                let (random_date, shakuntala_devi_answer, tips) = generate_random_value();
                 self.week_day = shakuntala_devi_answer;
                 self.random_date = random_date.to_string();
+                self.tips = tips;
                 self.hint = "Guess the day!".to_string();
                 self.already_pressed = Vec::new();
             }
