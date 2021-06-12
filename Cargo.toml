@@ -5,14 +5,16 @@ authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
 description = "Brain training tool inspired by Shakuntala Devi's technics "
 homepage = "https://github.com/newca12/shakuntala-devi-trainer"
 repository = "https://github.com/newca12/shakuntala-devi-trainer"
+keywords = ["game","brain-training", "cli","gui","program"]
+categories = ["games"]
 edition = "2018"
 license = "GPL-3.0-or-later"
 
 [dependencies]
-chrono = "0.4"
+chrono = "0.4.19"
 num-traits = "0.2.14"
 lazy_static = "1.4.0"
-rand = "0.8.0"
+rand = "0.8.3"
 getrandom = { version = "0.2.2", features = ["js"] }
 iced = { version = "0.3.0", features = ["glow", "debug"] }
 iced_web = "0.4.0"

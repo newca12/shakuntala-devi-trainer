@@ -135,7 +135,8 @@ impl Sandbox for ShakuntalaDeviTrainer {
                         .size(16),
                 )
                 .padding(8)
-                .on_press(Message::Reset),
+                .on_press(Message::Reset)
+                .style(style::Button::Start),
             )
             .padding(16);
 
@@ -158,11 +159,12 @@ impl Sandbox for ShakuntalaDeviTrainer {
                     )
                     .padding(8)
                     .on_press(Message::GuessDay(weekday))
+                    .style(style::Button::Days)
                 })
                 .padding(1)
         };
 
-        let resut = Column::new()
+        let result = Column::new()
             .push(Text::new(&self.hint).size(32))
             .padding(8);
 
@@ -248,7 +250,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
             .push(reset_button)
             .push(random_date)
             .push(weekday)
-            .push(resut)
+            .push(result)
             .align_items(Align::Center);
 
         Container::new(content)
@@ -257,5 +259,37 @@ impl Sandbox for ShakuntalaDeviTrainer {
             .center_x()
             .center_y()
             .into()
+    }
+}
+
+mod style {
+    use iced::{button, Background, Color, Vector};
+
+    pub enum Button {
+        Days,
+        Start,
+    }
+
+    impl button::StyleSheet for Button {
+        fn active(&self) -> button::Style {
+            button::Style {
+                background: Some(Background::Color(match self {
+                    Button::Days => Color::from_rgb(0.11, 0.42, 0.87),
+                    Button::Start => Color::from_rgb(0.11, 0.67, 0.11),
+                })),
+                border_radius: 12.0,
+                shadow_offset: Vector::new(1.0, 1.0),
+                text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
+                ..button::Style::default()
+            }
+        }
+
+        fn hovered(&self) -> button::Style {
+            button::Style {
+                text_color: Color::WHITE,
+                shadow_offset: Vector::new(1.0, 2.0),
+                ..self.active()
+            }
+        }
     }
 }
