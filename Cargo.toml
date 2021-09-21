@@ -10,12 +10,14 @@ categories = ["games"]
 edition = "2018"
 license = "GPL-3.0-or-later"
 
+resolver = "2"
+
 [dependencies]
 chrono = "0.4.19"
 num-traits = "0.2.14"
 lazy_static = "1.4.0"
 rand = "0.8.3"
 getrandom = { version = "0.2.2", features = ["js"] }
-iced = { version = "0.3.0", features = ["glow", "debug"] }
-iced_web = "0.4.0"
+iced = { path = "../iced" }
+iced_web = { path = "../iced/web" }
 structopt = "0.3.21"

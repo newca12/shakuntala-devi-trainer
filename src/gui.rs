@@ -2,7 +2,7 @@ use std::collections::VecDeque;
 
 use chrono::prelude::*;
 use iced::{
-    button, slider, Align, Button, Column, Container, Element, HorizontalAlignment, Length, Row,
+    button, slider, alignment, Alignment, Button, Column, Container, Element, Length, Row,
     Sandbox, Settings, Slider, Text,
 };
 use num_traits::cast::FromPrimitive;
@@ -131,7 +131,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
                 Button::new(
                     &mut self.reset,
                     Text::new("Start new game")
-                        .horizontal_alignment(HorizontalAlignment::Center)
+                        .horizontal_alignment(alignment::Horizontal::Center)
                         .size(16),
                 )
                 .padding(8)
@@ -146,7 +146,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
                     Button::new(
                         state,
                         Text::new(label)
-                            .horizontal_alignment(HorizontalAlignment::Center)
+                            .horizontal_alignment(alignment::Horizontal::Center)
                             .size(16),
                     )
                     .padding(8)
@@ -154,7 +154,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
                     Button::new(
                         state,
                         Text::new(label)
-                            .horizontal_alignment(HorizontalAlignment::Center)
+                            .horizontal_alignment(alignment::Horizontal::Center)
                             .size(16),
                     )
                     .padding(8)
@@ -251,7 +251,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
             .push(random_date)
             .push(weekday)
             .push(result)
-            .align_items(Align::Center);
+            .align_items(Alignment::Center);
 
         Container::new(content)
             .width(Length::Fill)
