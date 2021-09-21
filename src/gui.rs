@@ -2,8 +2,8 @@ use std::collections::VecDeque;
 
 use chrono::prelude::*;
 use iced::{
-    button, slider, alignment, Alignment, Button, Column, Container, Element, Length, Row,
-    Sandbox, Settings, Slider, Text,
+    alignment, button, slider, Alignment, Button, Column, Container, Element, Length, Row, Sandbox,
+    Settings, Slider, Text,
 };
 use num_traits::cast::FromPrimitive;
 
