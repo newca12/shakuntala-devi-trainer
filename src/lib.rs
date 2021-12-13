@@ -160,7 +160,6 @@ pub fn svm_86_distance(dt: NaiveDate) -> u32 {
         n -= (f64::from(m - 1) * 0.4 + 2.7) as u32;
     }
     n
-    
 }
 
 pub fn svm_86(dt: NaiveDate) -> Weekday {

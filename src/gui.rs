@@ -33,7 +33,7 @@ struct ShakuntalaDeviTrainer {
     already_pressed: Vec<Weekday>,
     tips: VecDeque<String>,
     hint: String,
-    start: instant::Instant
+    start: instant::Instant,
 }
 
 #[derive(Debug, Clone)]
@@ -71,7 +71,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
             already_pressed: Vec::new(),
             tips,
             hint: "Guess the day!".to_string(),
-            start: instant::Instant::now()
+            start: instant::Instant::now(),
         }
     }
 
