@@ -134,6 +134,7 @@ pub fn zeller(dt: NaiveDate) -> Weekday {
     .unwrap()
 }
 
+#[allow(clippy::useless_conversion)]
 pub fn st_mag_53(dt: NaiveDate) -> Weekday {
     let (j, m, a) = (dt.day(), dt.month(), dt.year() as u32);
     let man = (0.6 + 1.0 / f64::from(m) + 0.001) as u32;
@@ -152,14 +153,14 @@ pub fn svm_86_distance(dt: NaiveDate) -> u32 {
     let (j, m, mut a) = (dt.day(), dt.month(), dt.year() as u32);
     let mut n = a * 365 + 31 * (m - 1) + j;
     if m <= 2 {
-        a = a - 1;
+        a -= 1;
     }
     n = n + (a / 4) - (a / 100) + (a / 400);
     if m > 2 {
-        n = n - (f64::from(m - 1) * 0.4 + 2.7) as u32;
+        n -= (f64::from(m - 1) * 0.4 + 2.7) as u32;
     }
-    let n1 = n;
-    n1
+    n
+    
 }
 
 pub fn svm_86(dt: NaiveDate) -> Weekday {

@@ -21,3 +21,5 @@ getrandom = { version = "0.2.2", features = ["js"] }
 iced = { git = "https://github.com/iced-rs/iced", branch = "master" }
 iced_web = { git = "https://github.com/iced-rs/iced", branch = "master" }
 structopt = "0.3.21"
+# instant = { version = "0.1", features = [ "stdweb" ] }
+instant = { version = "0.1", features = [ "wasm-bindgen", "inaccurate" ] }

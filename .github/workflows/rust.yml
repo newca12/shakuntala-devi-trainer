@@ -100,3 +100,33 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path-to-lcov: ./lcov.info
+
+  publish:
+    name: Publish
+    needs: coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: |
+          echo build
+          rustup target add wasm32-unknown-unknown
+          cargo install -f wasm-bindgen-cli --version 0.2.78
+          cargo build --target wasm32-unknown-unknown
+          wasm-bindgen target/wasm32-unknown-unknown/debug/shakuntala-devi-trainer.wasm --out-dir shakuntala-devi-trainer --web
+      - name: Pushes to another repository
+        uses: cpina/github-action-push-to-another-repository@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: 'shakuntala-devi-trainer'
+          target-directory: 'shakuntala-devi-trainer'
+          destination-github-username: 'newca12'
+          destination-repository-name: 'newca12.github.com'
+          user-email: newca12@users.noreply.github.com
+          commit-message: Update shakuntala-devi-trainer
+          target-branch: master

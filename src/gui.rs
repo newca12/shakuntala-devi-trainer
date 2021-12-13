@@ -33,6 +33,7 @@ struct ShakuntalaDeviTrainer {
     already_pressed: Vec<Weekday>,
     tips: VecDeque<String>,
     hint: String,
+    start: instant::Instant
 }
 
 #[derive(Debug, Clone)]
@@ -70,6 +71,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
             already_pressed: Vec::new(),
             tips,
             hint: "Guess the day!".to_string(),
+            start: instant::Instant::now()
         }
     }
 
@@ -88,9 +90,10 @@ impl Sandbox for ShakuntalaDeviTrainer {
                         self.already_pressed.push(Weekday::from_u32(n).unwrap());
                     }
                     format!(
-                        "Congratulation ! You found {} after {} guess",
+                        "Congratulation ! You found {} after {} guess in {:#?}",
                         guess_day.to_string(),
-                        tries
+                        tries,
+                        self.start.elapsed()
                     )
                 } else {
                     match self.tips.pop_front() {
@@ -109,6 +112,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
                 self.tips = tips;
                 self.hint = "Guess the day!".to_string();
                 self.already_pressed = Vec::new();
+                self.start = instant::Instant::now();
             }
 
             Message::FirstYear(first_year) => {
@@ -165,7 +169,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
         };
 
         let result = Column::new()
-            .push(Text::new(&self.hint).size(32))
+            .push(Text::new(&self.hint).size(24))
             .padding(8);
 
         let random_date = Column::new()

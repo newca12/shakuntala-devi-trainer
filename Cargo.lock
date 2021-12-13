@@ -1968,6 +1968,7 @@ dependencies = [
  "getrandom",
  "iced",
  "iced_web",
+ "instant",
  "lazy_static",
  "num-traits",
  "rand",
