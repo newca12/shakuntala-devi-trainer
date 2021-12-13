@@ -134,6 +134,41 @@ pub fn zeller(dt: NaiveDate) -> Weekday {
     .unwrap()
 }
 
+pub fn st_mag_53(dt: NaiveDate) -> Weekday {
+    let (j, m, a) = (dt.day(), dt.month(), dt.year() as u32);
+    let man = (0.6 + 1.0 / f64::from(m) + 0.001) as u32;
+    let mp = m + 12 * man;
+    let ap = a - man;
+    let jd = j
+        + ((367.0 * (f64::from(mp) - 1.0) + 5.0) / 12.0 + 0.001) as u32
+        + (365.25 * (f64::from(ap) + 4712.0) + 0.001) as u32;
+    let jd = jd - (((f64::from(ap) / 100.0) as u32 + (f64::from(ap) / 400.0) as u32) as u32);
+    let js = f64::from(jd - 1720977) / 7.0;
+    let js = (7.0 * f64::from(js - f64::from(js as u32)) + 0.001) as i32;
+    Weekday::from_i32(js).unwrap()
+}
+
+pub fn svm_86_distance(dt: NaiveDate) -> u32 {
+    let (j, m, mut a) = (dt.day(), dt.month(), dt.year() as u32);
+    let mut n = a * 365 + 31 * (m - 1) + j;
+    if m <= 2 {
+        a = a - 1;
+    }
+    n = n + (a / 4) - (a / 100) + (a / 400);
+    if m > 2 {
+        n = n - (f64::from(m - 1) * 0.4 + 2.7) as u32;
+    }
+    let n1 = n;
+    n1
+}
+
+pub fn svm_86(dt: NaiveDate) -> Weekday {
+    //let base_date = NaiveDate::from_ymd(1901, 1, 7);
+    let base_date = NaiveDate::from_ymd(1583, 1, 3);
+    let distance = svm_86_distance(dt) - svm_86_distance(base_date);
+    Weekday::from_u32(distance % 7).unwrap()
+}
+
 pub fn random_date(from_year: u32, to_year: u32) -> NaiveDate {
     let start = NaiveDate::from_ymd(from_year.try_into().unwrap(), 1, 1).num_days_from_ce();
     let end = NaiveDate::from_ymd(to_year.try_into().unwrap(), 1, 1).num_days_from_ce();
@@ -156,36 +191,7 @@ pub fn random_date_with_tips(
 fn tomohiko_sakamoto_check() {
     let calendar = NaiveDate::from_ymd(1583, 1, 1).iter_days();
     for dt in calendar {
-        assert_eq!(tomohiko_sakamoto(dt), dt.weekday());
-        if dt.year() == 10000 {
-            break;
-        };
-    }
-}
-
-#[test]
-fn shakuntala_devi_check() {
-    let calendar = NaiveDate::from_ymd(1584, 1, 1).iter_days();
-    for dt in calendar {
-        assert_eq!(shakuntala_devi(dt).0, dt.weekday());
-        if dt.year() == 2204 {
-            break;
-        };
-    }
-}
-
-#[test]
-fn zeller_unit_check() {
-    let dt = NaiveDate::from_ymd(1928, 1, 7);
-    println!("response {} {} ", dt.year(), dt.weekday());
-    assert_eq!(zeller(dt), dt.weekday());
-}
-
-#[test]
-fn zeller_check() {
-    let calendar = NaiveDate::from_ymd(1584, 1, 1).iter_days();
-    for dt in calendar {
-        assert_eq!(zeller(dt), dt.weekday());
+        assert_eq!(tomohiko_sakamoto(dt), dt.weekday(), "testing {}", dt);
         if dt.year() == 10000 {
             break;
         };
@@ -196,8 +202,67 @@ fn zeller_check() {
 fn shakuntala_devi_unit_check() {
     let dt = NaiveDate::from_ymd(1928, 1, 7);
     println!("response {} {} ", dt.year(), dt.weekday());
-    assert_eq!(shakuntala_devi(dt).0, dt.weekday());
+    assert_eq!(shakuntala_devi(dt).0, dt.weekday(), "testing {}", dt);
 }
+
+#[test]
+fn shakuntala_devi_check() {
+    let calendar = NaiveDate::from_ymd(1584, 1, 1).iter_days();
+    for dt in calendar {
+        assert_eq!(shakuntala_devi(dt).0, dt.weekday(), "testing {}", dt);
+        if dt.year() == 2204 {
+            break;
+        };
+    }
+}
+
+#[test]
+fn zeller_unit_check() {
+    let dt = NaiveDate::from_ymd(1928, 1, 7);
+    println!("response {} {} ", dt.year(), dt.weekday());
+    assert_eq!(zeller(dt), dt.weekday(), "testing {}", dt);
+}
+
+#[test]
+fn zeller_check() {
+    let calendar = NaiveDate::from_ymd(1584, 1, 1).iter_days();
+    for dt in calendar {
+        assert_eq!(zeller(dt), dt.weekday(), "testing {}", dt);
+        if dt.year() == 10000 {
+            break;
+        };
+    }
+}
+
+#[test]
+fn st_mag_53_unit_check() {
+    let dt = NaiveDate::from_ymd(1980, 1, 7);
+    println!("response {} {} ", dt.year(), dt.weekday());
+    assert_eq!(st_mag_53(dt), dt.weekday(), "testing {}", dt);
+}
+
+#[test]
+fn st_mag_53_check() {
+    let calendar = NaiveDate::from_ymd(1700, 1, 1).iter_days();
+    for dt in calendar {
+        assert_eq!(st_mag_53(dt), dt.weekday(), "testing {}", dt);
+        if dt.year() == 2000 {
+            break;
+        };
+    }
+}
+
+#[test]
+fn svm_86_check() {
+    let calendar = NaiveDate::from_ymd(1583, 1, 3).iter_days();
+    for dt in calendar {
+        assert_eq!(svm_86(dt), dt.weekday(), "testing {}", dt);
+        if dt.year() == 10000 {
+            break;
+        };
+    }
+}
+
 #[test]
 fn leap_year_unit_check() {
     assert!(is_leap_year(1584));
