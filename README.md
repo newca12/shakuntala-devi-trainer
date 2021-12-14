@@ -49,7 +49,7 @@ You can try the experimental online version [shakuntala-devi-trainer][2]
 or built it yourself :  
 ```
 rustup target add wasm32-unknown-unknown
-cargo install -f wasm-bindgen-cli --version 0.2.78
+cargo install -f wasm-bindgen-cli --version 0.2.69
 cargo build --target wasm32-unknown-unknown
 wasm-bindgen target/wasm32-unknown-unknown/debug/shakuntala-devi-trainer.wasm --out-dir shakuntala-devi-trainer  --web
 ```
