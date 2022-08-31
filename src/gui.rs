@@ -1,10 +1,9 @@
 use std::collections::VecDeque;
 
 use chrono::prelude::*;
-use iced::{
-    button, slider, Align, Button, Column, Container, Element, HorizontalAlignment, Length, Row,
-    Sandbox, Settings, Slider, Text,
-};
+use iced::pure::widget::{Button, Column, Container, Row, Slider, Text};
+use iced::pure::{Element, Sandbox};
+use iced::{alignment, Alignment, Length, Settings};
 use num_traits::cast::FromPrimitive;
 
 pub fn run_gui() {
@@ -16,18 +15,8 @@ pub fn run_gui() {
 //Weekday does not implement Default so we can(t derive Default)
 #[derive(Debug)]
 struct ShakuntalaDeviTrainer {
-    first_year_slider: slider::State,
     first_year: u32,
-    last_year_slider: slider::State,
     last_year: u32,
-    reset: button::State,
-    monday: button::State,
-    tuesday: button::State,
-    wednesday: button::State,
-    thursday: button::State,
-    friday: button::State,
-    saturday: button::State,
-    sunday: button::State,
     random_date: String,
     week_day: Weekday,
     already_pressed: Vec<Weekday>,
@@ -54,18 +43,8 @@ impl Sandbox for ShakuntalaDeviTrainer {
                 shakuntala_devi_trainer::DEFAULT_LAST_YEAR,
             );
         Self {
-            first_year_slider: slider::State::new(),
             first_year: shakuntala_devi_trainer::DEFAULT_FIRST_YEAR,
-            last_year_slider: slider::State::new(),
             last_year: shakuntala_devi_trainer::DEFAULT_LAST_YEAR,
-            reset: button::State::new(),
-            monday: button::State::new(),
-            tuesday: button::State::new(),
-            wednesday: button::State::new(),
-            thursday: button::State::new(),
-            friday: button::State::new(),
-            saturday: button::State::new(),
-            sunday: button::State::new(),
             random_date: random_date.to_string(),
             week_day: shakuntala_devi_answer,
             already_pressed: Vec::new(),
@@ -91,7 +70,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
                     }
                     format!(
                         "Congratulation ! You found {} after {} guess in {:#?}",
-                        guess_day.to_string(),
+                        guess_day,
                         tries,
                         self.start.elapsed()
                     )
@@ -129,13 +108,12 @@ impl Sandbox for ShakuntalaDeviTrainer {
         }
     }
 
-    fn view(&mut self) -> Element<Self::Message> {
+    fn view(&self) -> Element<Self::Message> {
         let reset_button = Column::new()
             .push(
                 Button::new(
-                    &mut self.reset,
                     Text::new("Start new game")
-                        .horizontal_alignment(HorizontalAlignment::Center)
+                        .horizontal_alignment(alignment::Horizontal::Center)
                         .size(16),
                 )
                 .padding(8)
@@ -144,21 +122,19 @@ impl Sandbox for ShakuntalaDeviTrainer {
             )
             .padding(16);
 
-        let column = |state, label, weekday, already_pressed| {
+        let column = |label, weekday, already_pressed| {
             Column::new()
                 .push(if already_pressed {
                     Button::new(
-                        state,
                         Text::new(label)
-                            .horizontal_alignment(HorizontalAlignment::Center)
+                            .horizontal_alignment(alignment::Horizontal::Center)
                             .size(16),
                     )
                     .padding(8)
                 } else {
                     Button::new(
-                        state,
                         Text::new(label)
-                            .horizontal_alignment(HorizontalAlignment::Center)
+                            .horizontal_alignment(alignment::Horizontal::Center)
                             .size(16),
                     )
                     .padding(8)
@@ -186,7 +162,6 @@ impl Sandbox for ShakuntalaDeviTrainer {
 
         let first_year_slider = Column::new()
             .push(Slider::new(
-                &mut self.first_year_slider,
                 shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,
                 self.first_year,
                 Message::FirstYear,
@@ -195,7 +170,6 @@ impl Sandbox for ShakuntalaDeviTrainer {
 
         let last_year_slider = Column::new()
             .push(Slider::new(
-                &mut self.last_year_slider,
                 shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,
                 self.last_year,
                 Message::LastYear,
@@ -204,43 +178,36 @@ impl Sandbox for ShakuntalaDeviTrainer {
 
         let weekday = Row::new()
             .push(column(
-                &mut self.monday,
                 "Monday",
                 Weekday::Mon,
                 self.already_pressed.contains(&Weekday::Mon),
             ))
             .push(column(
-                &mut self.tuesday,
                 "Tuesday",
                 Weekday::Tue,
                 self.already_pressed.contains(&Weekday::Tue),
             ))
             .push(column(
-                &mut self.wednesday,
                 "Wednesday",
                 Weekday::Wed,
                 self.already_pressed.contains(&Weekday::Wed),
             ))
             .push(column(
-                &mut self.thursday,
                 "Thursday",
                 Weekday::Thu,
                 self.already_pressed.contains(&Weekday::Thu),
             ))
             .push(column(
-                &mut self.friday,
                 "Friday",
                 Weekday::Fri,
                 self.already_pressed.contains(&Weekday::Fri),
             ))
             .push(column(
-                &mut self.saturday,
                 "Saturday",
                 Weekday::Sat,
                 self.already_pressed.contains(&Weekday::Sat),
             ))
             .push(column(
-                &mut self.sunday,
                 "Sunday",
                 Weekday::Sun,
                 self.already_pressed.contains(&Weekday::Sun),
@@ -255,7 +222,7 @@ impl Sandbox for ShakuntalaDeviTrainer {
             .push(random_date)
             .push(weekday)
             .push(result)
-            .align_items(Align::Center);
+            .align_items(Alignment::Center);
 
         Container::new(content)
             .width(Length::Fill)

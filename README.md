@@ -15,6 +15,12 @@ shakuntala-devi-trainer is an EDLA project.
 
 The purpose of [edla.org](http://www.edla.org) is to promote the state of the art in various domains.
 
+### Installation ###
+
+```
+cargo install shakuntala-devi-trainer
+```
+
 ### Usage ###
 The goal is to determine [the day of the week](https://en.wikipedia.org/wiki/Determination_of_the_day_of_the_week) for a given date.  
 The technic used by Shakuntala Devi is describe in her book [Figuring the Joy of Numbers](https://www.amazon.com/gp/product/8122200389).  
@@ -22,12 +28,12 @@ You can see an overview in Tibee's video [India's Human Computer](https://www.yo
 
 To launch the GUI 
 ```
-cargo run
+shakuntala-devi-trainer
 ``` 
 
 To launch the text console version
 ```
-cargo run -- --cli
+shakuntala-devi-trainer --cli
 ```
 
 If you use the console version your answer should be encoded as an integer like described in the book like so :
@@ -44,16 +50,31 @@ Each hint is the result of a step of Shakuntala Devi's algorithm.
 
 You can adjust the range of the random date with two handy sliders.
 
+### Tips ###
+In the Gregorian calendar, three criteria must be taken into account to identify leap years:
+* The year must be evenly divisible by 4;
+* If the year can also be evenly divided by 100, it is not a leap year;
+* unless... The year is also evenly divisible by 400. Then it is a leap year.
+
+According to these rules, the years 2000 and 2400 are leap years,
+while 1800, 1900, 2100, 2200, 2300, and 2500 are not leap years.
+
 ### Web version ###
-You can try the experimental online version [shakuntala-devi-trainer][2]
+You can try the online version [shakuntala-devi-trainer][2]
 or built it yourself :  
 ```
 rustup target add wasm32-unknown-unknown
-cargo install -f wasm-bindgen-cli --version 0.2.69
+cargo install -f wasm-bindgen-cli
 cargo build --target wasm32-unknown-unknown
 wasm-bindgen target/wasm32-unknown-unknown/debug/shakuntala-devi-trainer.wasm --out-dir shakuntala-devi-trainer  --web
 ```
+Known issues :
+* [Web canvas is stuck at fixed size](https://github.com/iced-rs/iced/issues/1265)
+* [Some glitch with firefox](https://github.com/iced-rs/iced/pull/1096#pullrequestreview-866907637)
 
+### Alternate systems for mentally calculating the day of the week for any given date. ###
+
+https://mattbaker.blog/2020/04/26/mental-math-and-calendar-calculations/
 
 ### Developer Notes ###
 * [Modulo of negative numbers shows languages in two different camps.](https://torstencurdt.com/tech/posts/modulo-of-negative-numbers)  
@@ -64,7 +85,7 @@ wasm-bindgen target/wasm32-unknown-unknown/debug/shakuntala-devi-trainer.wasm --
 * [Rust built-in test framework does not support parameterized tests](https://stackoverflow.com/questions/34662713/how-can-i-create-parameterized-tests-in-rust)
 
 ### License ###
-© 2020-2021 Olivier ROLAND. Distributed under the GPLv3 License.
+© 2020-2022 Olivier ROLAND. Distributed under the GPLv3 License.
 
 [1]: https://en.wikipedia.org/wiki/Shakuntala_Devi
 [2]: https://edla.org/shakuntala-devi-trainer

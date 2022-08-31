@@ -1,18 +1,18 @@
 use chrono::prelude::*;
+use clap::Parser;
 use num_traits::cast::FromPrimitive;
 use std::io;
 use std::time::Instant;
-use structopt::StructOpt;
 
-#[derive(StructOpt, Debug)]
-#[structopt(name = "basic")]
+#[derive(Parser, Debug)]
+#[clap(name = "basic")]
 struct Opt {
-    #[structopt(short, long)]
+    #[clap(short, long)]
     cli: bool,
 }
 
 pub fn parse_cli() -> bool {
-    let opt = Opt::from_args();
+    let opt = Opt::parse();
     opt.cli
 }
 
