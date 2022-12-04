@@ -163,17 +163,21 @@ pub fn svm_86_distance(dt: NaiveDate) -> u32 {
 }
 
 pub fn svm_86(dt: NaiveDate) -> Weekday {
-    //let base_date = NaiveDate::from_ymd(1901, 1, 7);
-    let base_date = NaiveDate::from_ymd(1583, 1, 3);
+    //let base_date = NaiveDate::from_ymd_opt(1901, 1, 7);
+    let base_date = NaiveDate::from_ymd_opt(1583, 1, 3).unwrap();
     let distance = svm_86_distance(dt) - svm_86_distance(base_date);
     Weekday::from_u32(distance % 7).unwrap()
 }
 
 pub fn random_date(from_year: u32, to_year: u32) -> NaiveDate {
-    let start = NaiveDate::from_ymd(from_year.try_into().unwrap(), 1, 1).num_days_from_ce();
-    let end = NaiveDate::from_ymd(to_year.try_into().unwrap(), 1, 1).num_days_from_ce();
+    let start = NaiveDate::from_ymd_opt(from_year.try_into().unwrap(), 1, 1)
+        .unwrap()
+        .num_days_from_ce();
+    let end = NaiveDate::from_ymd_opt(to_year.try_into().unwrap(), 1, 1)
+        .unwrap()
+        .num_days_from_ce();
     let days = rand::thread_rng().gen_range(1..end - start);
-    let dt = NaiveDate::from_ymd(from_year.try_into().unwrap(), 1, 7);
+    let dt = NaiveDate::from_ymd_opt(from_year.try_into().unwrap(), 1, 7).unwrap();
     dt + Duration::days(days as i64)
 }
 
@@ -189,7 +193,7 @@ pub fn random_date_with_tips(
 
 #[test]
 fn tomohiko_sakamoto_check() {
-    let calendar = NaiveDate::from_ymd(1583, 1, 1).iter_days();
+    let calendar = NaiveDate::from_ymd_opt(1583, 1, 1).unwrap().iter_days();
     for dt in calendar {
         assert_eq!(tomohiko_sakamoto(dt), dt.weekday(), "testing {}", dt);
         if dt.year() == 10000 {
@@ -200,14 +204,14 @@ fn tomohiko_sakamoto_check() {
 
 #[test]
 fn shakuntala_devi_unit_check() {
-    let dt = NaiveDate::from_ymd(1928, 1, 7);
+    let dt = NaiveDate::from_ymd_opt(1928, 1, 7).unwrap();
     println!("response {} {} ", dt.year(), dt.weekday());
     assert_eq!(shakuntala_devi(dt).0, dt.weekday(), "testing {}", dt);
 }
 
 #[test]
 fn shakuntala_devi_check() {
-    let calendar = NaiveDate::from_ymd(1584, 1, 1).iter_days();
+    let calendar = NaiveDate::from_ymd_opt(1584, 1, 1).unwrap().iter_days();
     for dt in calendar {
         assert_eq!(shakuntala_devi(dt).0, dt.weekday(), "testing {}", dt);
         if dt.year() == 2204 {
@@ -218,14 +222,14 @@ fn shakuntala_devi_check() {
 
 #[test]
 fn zeller_unit_check() {
-    let dt = NaiveDate::from_ymd(1928, 1, 7);
+    let dt = NaiveDate::from_ymd_opt(1928, 1, 7).unwrap();
     println!("response {} {} ", dt.year(), dt.weekday());
     assert_eq!(zeller(dt), dt.weekday(), "testing {}", dt);
 }
 
 #[test]
 fn zeller_check() {
-    let calendar = NaiveDate::from_ymd(1584, 1, 1).iter_days();
+    let calendar = NaiveDate::from_ymd_opt(1584, 1, 1).unwrap().iter_days();
     for dt in calendar {
         assert_eq!(zeller(dt), dt.weekday(), "testing {}", dt);
         if dt.year() == 10000 {
@@ -236,14 +240,14 @@ fn zeller_check() {
 
 #[test]
 fn st_mag_53_unit_check() {
-    let dt = NaiveDate::from_ymd(1980, 1, 7);
+    let dt = NaiveDate::from_ymd_opt(1980, 1, 7).unwrap();
     println!("response {} {} ", dt.year(), dt.weekday());
     assert_eq!(st_mag_53(dt), dt.weekday(), "testing {}", dt);
 }
 
 #[test]
 fn st_mag_53_check() {
-    let calendar = NaiveDate::from_ymd(1700, 1, 1).iter_days();
+    let calendar = NaiveDate::from_ymd_opt(1700, 1, 1).unwrap().iter_days();
     for dt in calendar {
         assert_eq!(st_mag_53(dt), dt.weekday(), "testing {}", dt);
         if dt.year() == 2000 {
@@ -254,7 +258,7 @@ fn st_mag_53_check() {
 
 #[test]
 fn svm_86_check() {
-    let calendar = NaiveDate::from_ymd(1583, 1, 3).iter_days();
+    let calendar = NaiveDate::from_ymd_opt(1583, 1, 3).unwrap().iter_days();
     for dt in calendar {
         assert_eq!(svm_86(dt), dt.weekday(), "testing {}", dt);
         if dt.year() == 10000 {

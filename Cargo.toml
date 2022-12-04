@@ -11,11 +11,11 @@ edition = "2021"
 license = "GPL-3.0-or-later"
 
 [dependencies]
-chrono = "0.4.22"
-num-traits = "0.2.15"
-lazy_static = "1.4.0"
-rand = "0.8.5"
-getrandom = { version = "0.2.7", features = ["js"] }
-iced = { version = "0.4.2", features = ["pure"]}
-clap = { version = "3.2.19", features = ["derive"] }
+chrono = "0.4.23"
+clap = { version = "4.0.29", features = ["derive"] }
+getrandom = { version = "0.2.8", features = ["js"] }
+iced = "0.5.2"
 instant = { version = "0.1.12", features = [ "wasm-bindgen", "inaccurate" ] }
+lazy_static = "1.4.0"
+num-traits = "0.2.15"
+rand = "0.8.5"

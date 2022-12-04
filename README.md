@@ -69,6 +69,7 @@ cargo build --target wasm32-unknown-unknown
 wasm-bindgen target/wasm32-unknown-unknown/debug/shakuntala-devi-trainer.wasm --out-dir shakuntala-devi-trainer  --web
 ```
 Known issues :
+* [wasm generation broken in Iqced 5.2 (fixed in master)](https://github.com/iced-rs/iced/issues/1522)
 * [Web canvas is stuck at fixed size](https://github.com/iced-rs/iced/issues/1265)
 * [Some glitch with firefox](https://github.com/iced-rs/iced/pull/1096#pullrequestreview-866907637)
 

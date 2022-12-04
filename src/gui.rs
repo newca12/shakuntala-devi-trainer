@@ -1,10 +1,16 @@
+use self::theme::Theme;
+use self::widget::Element;
+
 use std::collections::VecDeque;
 
 use chrono::prelude::*;
-use iced::pure::widget::{Button, Column, Container, Row, Slider, Text};
-use iced::pure::{Element, Sandbox};
-use iced::{alignment, Alignment, Length, Settings};
 use num_traits::cast::FromPrimitive;
+
+use iced::{
+    alignment, executor,
+    widget::{button, column, row, text, Container, Slider},
+    Alignment, Application, Length, Settings,
+};
 
 pub fn run_gui() {
     let mut settings = Settings::default();
@@ -12,8 +18,8 @@ pub fn run_gui() {
     ShakuntalaDeviTrainer::run(settings).unwrap();
 }
 
-//Weekday does not implement Default so we can(t derive Default)
-#[derive(Debug)]
+//Weekday does not implement Default so we can't derive Default
+#[derive(Debug, Clone)]
 struct ShakuntalaDeviTrainer {
     first_year: u32,
     last_year: u32,
@@ -33,32 +39,42 @@ enum Message {
     LastYear(u32),
 }
 
-impl Sandbox for ShakuntalaDeviTrainer {
+impl Application for ShakuntalaDeviTrainer {
     type Message = Message;
+    type Theme = Theme;
+    type Executor = executor::Default;
+    type Flags = ();
 
-    fn new() -> Self {
+    fn theme(&self) -> Theme {
+        Theme::default()
+    }
+
+    fn new(_flags: ()) -> (ShakuntalaDeviTrainer, iced::Command<Message>) {
         let (random_date, shakuntala_devi_answer, tips) =
             shakuntala_devi_trainer::random_date_with_tips(
                 shakuntala_devi_trainer::DEFAULT_FIRST_YEAR,
                 shakuntala_devi_trainer::DEFAULT_LAST_YEAR,
             );
-        Self {
-            first_year: shakuntala_devi_trainer::DEFAULT_FIRST_YEAR,
-            last_year: shakuntala_devi_trainer::DEFAULT_LAST_YEAR,
-            random_date: random_date.to_string(),
-            week_day: shakuntala_devi_answer,
-            already_pressed: Vec::new(),
-            tips,
-            hint: "Guess the day!".to_string(),
-            start: instant::Instant::now(),
-        }
+        (
+            Self {
+                first_year: shakuntala_devi_trainer::DEFAULT_FIRST_YEAR,
+                last_year: shakuntala_devi_trainer::DEFAULT_LAST_YEAR,
+                random_date: random_date.to_string(),
+                week_day: shakuntala_devi_answer,
+                already_pressed: Vec::new(),
+                tips,
+                hint: "Guess the day!".to_string(),
+                start: instant::Instant::now(),
+            },
+            iced::Command::none(),
+        )
     }
 
     fn title(&self) -> String {
         String::from("Shakuntala Devi trainer")
     }
 
-    fn update(&mut self, message: Self::Message) {
+    fn update(&mut self, message: Message) -> iced::Command<Message> {
         match message {
             Message::GuessDay(guess_day) => {
                 self.already_pressed.push(guess_day);
@@ -106,123 +122,112 @@ impl Sandbox for ShakuntalaDeviTrainer {
                 }
             }
         }
+        iced::Command::none()
     }
 
-    fn view(&self) -> Element<Self::Message> {
-        let reset_button = Column::new()
-            .push(
-                Button::new(
-                    Text::new("Start new game")
+    fn view(&self) -> Element<Message> {
+        let reset_button = column![button(
+            text("Start new game")
+                .horizontal_alignment(alignment::Horizontal::Center)
+                .size(16),
+        )
+        .padding(8)
+        .on_press(Message::Reset)
+        .style(theme::Button::Start),]
+        .padding(16);
+
+        let column = |label, weekday, already_pressed| {
+            column![if already_pressed {
+                button(
+                    text(label)
                         .horizontal_alignment(alignment::Horizontal::Center)
                         .size(16),
                 )
                 .padding(8)
-                .on_press(Message::Reset)
-                .style(style::Button::Start),
-            )
-            .padding(16);
-
-        let column = |label, weekday, already_pressed| {
-            Column::new()
-                .push(if already_pressed {
-                    Button::new(
-                        Text::new(label)
-                            .horizontal_alignment(alignment::Horizontal::Center)
-                            .size(16),
-                    )
-                    .padding(8)
-                } else {
-                    Button::new(
-                        Text::new(label)
-                            .horizontal_alignment(alignment::Horizontal::Center)
-                            .size(16),
-                    )
-                    .padding(8)
-                    .on_press(Message::GuessDay(weekday))
-                    .style(style::Button::Days)
-                })
-                .padding(1)
+            } else {
+                button(
+                    text(label)
+                        .horizontal_alignment(alignment::Horizontal::Center)
+                        .size(16),
+                )
+                .padding(8)
+                .on_press(Message::GuessDay(weekday))
+                .style(theme::Button::Days)
+            }]
+            .padding(1)
         };
 
-        let result = Column::new()
-            .push(Text::new(&self.hint).size(24))
-            .padding(8);
+        let result = column![text(&self.hint).size(24)].padding(8);
 
-        let random_date = Column::new()
-            .push(Text::new(&self.random_date).size(48))
-            .padding(8);
+        let random_date = column![text(&self.random_date).size(48)].padding(8);
 
-        let first_year = Column::new()
-            .push(Text::new(&self.first_year.to_string()).size(12))
-            .padding(0);
+        let first_year = column![text(self.first_year.to_string()).size(12)].padding(0);
 
-        let last_year = Column::new()
-            .push(Text::new(&self.last_year.to_string()).size(12))
-            .padding(0);
+        let last_year = column![text(self.last_year.to_string()).size(12)].padding(0);
 
-        let first_year_slider = Column::new()
-            .push(Slider::new(
-                shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,
-                self.first_year,
-                Message::FirstYear,
-            ))
-            .padding(0);
+        let first_year_slider = column![Slider::new(
+            shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,
+            self.first_year,
+            Message::FirstYear,
+        )]
+        .padding(0);
 
-        let last_year_slider = Column::new()
-            .push(Slider::new(
-                shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,
-                self.last_year,
-                Message::LastYear,
-            ))
-            .padding(0);
+        let last_year_slider = column![Slider::new(
+            shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,
+            self.last_year,
+            Message::LastYear,
+        )]
+        .padding(0);
 
-        let weekday = Row::new()
-            .push(column(
+        let weekday = row![
+            column(
                 "Monday",
                 Weekday::Mon,
                 self.already_pressed.contains(&Weekday::Mon),
-            ))
-            .push(column(
+            ),
+            column(
                 "Tuesday",
                 Weekday::Tue,
                 self.already_pressed.contains(&Weekday::Tue),
-            ))
-            .push(column(
+            ),
+            column(
                 "Wednesday",
                 Weekday::Wed,
                 self.already_pressed.contains(&Weekday::Wed),
-            ))
-            .push(column(
+            ),
+            column(
                 "Thursday",
                 Weekday::Thu,
                 self.already_pressed.contains(&Weekday::Thu),
-            ))
-            .push(column(
+            ),
+            column(
                 "Friday",
                 Weekday::Fri,
                 self.already_pressed.contains(&Weekday::Fri),
-            ))
-            .push(column(
+            ),
+            column(
                 "Saturday",
                 Weekday::Sat,
                 self.already_pressed.contains(&Weekday::Sat),
-            ))
-            .push(column(
+            ),
+            column(
                 "Sunday",
                 Weekday::Sun,
                 self.already_pressed.contains(&Weekday::Sun),
-            ));
+            )
+        ];
 
-        let content = Column::new()
-            .push(first_year_slider)
-            .push(first_year)
-            .push(last_year_slider)
-            .push(last_year)
-            .push(reset_button)
-            .push(random_date)
-            .push(weekday)
-            .push(result)
-            .align_items(Alignment::Center);
+        let content = column![
+            first_year_slider,
+            first_year,
+            last_year_slider,
+            last_year,
+            reset_button,
+            random_date,
+            weekday,
+            result
+        ]
+        .align_items(Alignment::Center);
 
         Container::new(content)
             .width(Length::Fill)
@@ -233,33 +238,173 @@ impl Sandbox for ShakuntalaDeviTrainer {
     }
 }
 
-mod style {
-    use iced::{button, Background, Color, Vector};
+// Always import widget types from this module since it
+// uses our custom theme instead of the built-in iced::Theme.
+// Otherwise you will get compilation errors since iced::Element
+// expects use of iced::Theme by default.
+mod widget {
+    #![allow(dead_code)]
+    use crate::gui::theme::Theme;
 
+    pub type Renderer = iced::Renderer<Theme>;
+    pub type Element<'a, Message> = iced::Element<'a, Message, Renderer>;
+    pub type Container<'a, Message> = iced::widget::Container<'a, Message, Renderer>;
+    pub type Button<'a, Message> = iced::widget::Button<'a, Message, Renderer>;
+}
+
+mod theme {
+    use iced::theme::Slider;
+    use iced::widget::{button, container, slider, text};
+    use iced::{application, color, Background, Color, Vector};
+
+    #[derive(Debug, Clone, Copy, Default)]
+    pub struct Theme;
+
+    impl application::StyleSheet for Theme {
+        type Style = ();
+
+        fn appearance(&self, _style: &Self::Style) -> application::Appearance {
+            application::Appearance {
+                background_color: color!(0xff, 0xff, 0xff),
+                text_color: color!(0x0, 0x0, 0x0),
+            }
+        }
+    }
+
+    impl text::StyleSheet for Theme {
+        type Style = ();
+
+        fn appearance(&self, _style: Self::Style) -> text::Appearance {
+            text::Appearance::default()
+        }
+    }
+
+    impl slider::StyleSheet for Theme {
+        type Style = Slider;
+
+        fn active(&self, _style: &Self::Style) -> slider::Appearance {
+            slider::Appearance {
+                rail_colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
+                handle: {
+                    slider::Handle {
+                        shape: iced::widget::slider::HandleShape::Rectangle {
+                            width: 8,
+                            border_radius: 12.0,
+                        },
+                        color: color!(0x9c, 0x9c, 0x9c),
+                        border_width: (1.0),
+                        border_color: color!(0x0, 0x0, 0x0),
+                    }
+                },
+            }
+        }
+
+        fn hovered(&self, _style: &Self::Style) -> slider::Appearance {
+            slider::Appearance {
+                rail_colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
+                handle: {
+                    slider::Handle {
+                        shape: iced::widget::slider::HandleShape::Rectangle {
+                            width: 8,
+                            border_radius: 12.0,
+                        },
+                        color: color!(0xfc, 0xfc, 0xfc),
+                        border_width: (1.0),
+                        border_color: color!(0x0, 0x0, 0x0),
+                    }
+                },
+            }
+        }
+
+        fn dragging(&self, _style: &Self::Style) -> slider::Appearance {
+            slider::Appearance {
+                rail_colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
+                handle: {
+                    slider::Handle {
+                        shape: iced::widget::slider::HandleShape::Rectangle {
+                            width: 8,
+                            border_radius: 12.0,
+                        },
+                        color: color!(0xda, 0xda, 0xda),
+                        border_width: (1.0),
+                        border_color: color!(0x0, 0x0, 0x0),
+                    }
+                },
+            }
+        }
+    }
+
+    #[derive(Debug, Clone, Copy, Default)]
+    pub enum Container {
+        #[default]
+        Default,
+        #[allow(dead_code)]
+        Bordered,
+    }
+
+    impl container::StyleSheet for Theme {
+        type Style = Container;
+
+        fn appearance(&self, style: &Self::Style) -> container::Appearance {
+            match style {
+                Container::Default => container::Appearance::default(),
+                Container::Bordered => container::Appearance::default(),
+            }
+        }
+    }
+
+    #[derive(Debug, Clone, Copy, Default)]
     pub enum Button {
+        #[default]
         Days,
         Start,
     }
 
-    impl button::StyleSheet for Button {
-        fn active(&self) -> button::Style {
-            button::Style {
-                background: Some(Background::Color(match self {
-                    Button::Days => Color::from_rgb(0.11, 0.42, 0.87),
-                    Button::Start => Color::from_rgb(0.11, 0.67, 0.11),
-                })),
-                border_radius: 12.0,
-                shadow_offset: Vector::new(1.0, 1.0),
-                text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
-                ..button::Style::default()
+    impl button::StyleSheet for Theme {
+        type Style = Button;
+        fn active(&self, style: &Self::Style) -> button::Appearance {
+            match style {
+                Button::Days => button::Appearance {
+                    background: Color::from_rgb(0.11, 0.42, 0.87).into(),
+                    border_radius: 12.0,
+                    shadow_offset: Vector::new(1.0, 1.0),
+                    text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
+                    ..Default::default()
+                },
+                Button::Start => button::Appearance {
+                    background: Color::from_rgb(0.11, 0.67, 0.11).into(),
+                    border_radius: 12.0,
+                    shadow_offset: Vector::new(1.0, 1.0),
+                    text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
+                    ..Default::default()
+                },
             }
         }
 
-        fn hovered(&self) -> button::Style {
-            button::Style {
+        fn hovered(&self, style: &Self::Style) -> button::Appearance {
+            button::Appearance {
                 text_color: Color::WHITE,
                 shadow_offset: Vector::new(1.0, 2.0),
-                ..self.active()
+                ..self.active(style)
+            }
+        }
+
+        fn disabled(&self, style: &Self::Style) -> button::Appearance {
+            let active = self.active(style);
+
+            button::Appearance {
+                shadow_offset: Vector::default(),
+                background: active.background.map(|background| match background {
+                    Background::Color(color) => Background::Color(Color {
+                        a: color.a * 0.7,
+                        ..color
+                    }),
+                }),
+                text_color: Color {
+                    a: active.text_color.a * 0.7,
+                    ..active.text_color
+                },
+                ..active
             }
         }
     }
