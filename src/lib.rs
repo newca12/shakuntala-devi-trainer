@@ -1,8 +1,7 @@
-#[macro_use]
-extern crate lazy_static;
 use chrono::prelude::*;
 use chrono::Duration;
 use num_traits::cast::FromPrimitive;
+use once_cell::sync::Lazy;
 use rand::Rng;
 use std::{
     collections::{HashMap, VecDeque},
@@ -14,41 +13,39 @@ pub const MAX_YEAR: u32 = 2204;
 pub const DEFAULT_FIRST_YEAR: u32 = 1932;
 pub const DEFAULT_LAST_YEAR: u32 = 2032;
 
-lazy_static! {
-    static ref YEARS: HashMap<i32, i32> = {
-        const T3: [i32; 7] = [0, 5, 3, 1, 6, 4, 2];
-        let mut years = HashMap::new();
-        let mut cycled = T3.iter().cycle();
-        for year in (1584..1600).step_by(4) {
-            years.insert(year, *cycled.next().unwrap());
-        }
-        let mut cycled = T3.iter().cycle();
-        for year in (1600..1700).step_by(4) {
-            years.insert(year, 6 + *cycled.next().unwrap());
-        }
-        let mut cycled = T3.iter().cycle();
-        for year in (1700..1800).step_by(4) {
-            years.insert(year, 4 + *cycled.next().unwrap());
-        }
-        let mut cycled = T3.iter().cycle();
-        for year in (1800..1900).step_by(4) {
-            years.insert(year, 2 + *cycled.next().unwrap());
-        }
-        let mut cycled = T3.iter().cycle();
-        for year in (1900..2000).step_by(4) {
-            years.insert(year, *cycled.next().unwrap());
-        }
-        let mut cycled = T3.iter().cycle();
-        for year in (2000..2100).step_by(4) {
-            years.insert(year, 6 + *cycled.next().unwrap());
-        }
-        let mut cycled = T3.iter().cycle();
-        for year in (2100..2200).step_by(4) {
-            years.insert(year, 4 + *cycled.next().unwrap());
-        }
-        years
-    };
-}
+static YEARS: Lazy<HashMap<i32, i32>> = Lazy::new(|| {
+    const T3: [i32; 7] = [0, 5, 3, 1, 6, 4, 2];
+    let mut years = HashMap::new();
+    let mut cycled = T3.iter().cycle();
+    for year in (1584..1600).step_by(4) {
+        years.insert(year, *cycled.next().unwrap());
+    }
+    let mut cycled = T3.iter().cycle();
+    for year in (1600..1700).step_by(4) {
+        years.insert(year, 6 + *cycled.next().unwrap());
+    }
+    let mut cycled = T3.iter().cycle();
+    for year in (1700..1800).step_by(4) {
+        years.insert(year, 4 + *cycled.next().unwrap());
+    }
+    let mut cycled = T3.iter().cycle();
+    for year in (1800..1900).step_by(4) {
+        years.insert(year, 2 + *cycled.next().unwrap());
+    }
+    let mut cycled = T3.iter().cycle();
+    for year in (1900..2000).step_by(4) {
+        years.insert(year, *cycled.next().unwrap());
+    }
+    let mut cycled = T3.iter().cycle();
+    for year in (2000..2100).step_by(4) {
+        years.insert(year, 6 + *cycled.next().unwrap());
+    }
+    let mut cycled = T3.iter().cycle();
+    for year in (2100..2200).step_by(4) {
+        years.insert(year, 4 + *cycled.next().unwrap());
+    }
+    years
+});
 
 //https://stackoverflow.com/questions/725098/leap-year-calculation
 //https://en.wikipedia.org/wiki/Leap_year#Algorithm

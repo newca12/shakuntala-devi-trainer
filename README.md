@@ -69,7 +69,6 @@ cargo build --target wasm32-unknown-unknown
 wasm-bindgen target/wasm32-unknown-unknown/debug/shakuntala-devi-trainer.wasm --out-dir shakuntala-devi-trainer  --web
 ```
 Known issues :
-* [wasm generation broken in Iqced 5.2 (fixed in master)](https://github.com/iced-rs/iced/issues/1522)
 * [Web canvas is stuck at fixed size](https://github.com/iced-rs/iced/issues/1265)
 * [Some glitch with firefox](https://github.com/iced-rs/iced/pull/1096#pullrequestreview-866907637)
 
@@ -81,7 +80,7 @@ https://mattbaker.blog/2020/04/26/mental-math-and-calendar-calculations/
 * [Modulo of negative numbers shows languages in two different camps.](https://torstencurdt.com/tech/posts/modulo-of-negative-numbers)  
 * Rust conveniently allow infinite lazy stream with iterator
 * num-traits is required for Weekday::from_u32
-* lazy_static is required to provide a singleton HashMap
+* once_cell is required to provide a singleton HashMap
 * [By default Rust test programs hide the stdout of successful tests](https://stackoverflow.com/a/25107081)
 * [Rust built-in test framework does not support parameterized tests](https://stackoverflow.com/questions/34662713/how-can-i-create-parameterized-tests-in-rust)
 
