@@ -140,7 +140,7 @@ pub fn st_mag_53(dt: NaiveDate) -> Weekday {
     let jd = j
         + ((367.0 * (f64::from(mp) - 1.0) + 5.0) / 12.0 + 0.001) as u32
         + (365.25 * (f64::from(ap) + 4712.0) + 0.001) as u32;
-    let jd = jd - (((f64::from(ap) / 100.0) as u32 + (f64::from(ap) / 400.0) as u32) as u32);
+    let jd = jd - ((f64::from(ap) / 100.0) as u32 + (f64::from(ap) / 400.0) as u32);
     let js = f64::from(jd - 1720977) / 7.0;
     let js = (7.0 * f64::from(js - f64::from(js as u32)) + 0.001) as i32;
     Weekday::from_i32(js).unwrap()
