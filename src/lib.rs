@@ -47,6 +47,8 @@ static YEARS: Lazy<HashMap<i32, i32>> = Lazy::new(|| {
     years
 });
 
+pub const T2: [i32; 12] = [0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5];
+
 //https://stackoverflow.com/questions/725098/leap-year-calculation
 //https://en.wikipedia.org/wiki/Leap_year#Algorithm
 fn is_leap_year(y: i32) -> bool {
@@ -70,7 +72,6 @@ pub fn tomohiko_sakamoto(dt: NaiveDate) -> Weekday {
 //https://fiat-knox.livejournal.com/1067226.html
 pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, VecDeque<String>) {
     let mut v: VecDeque<String> = VecDeque::new();
-    const T2: [i32; 12] = [0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5];
     let day = dt.day() % 7;
     let day = (day as i32 + T2[dt.month0() as usize]) % 7;
     v.push_back(format!("Step 1 is {}", day));

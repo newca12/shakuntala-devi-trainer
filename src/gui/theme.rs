@@ -1,4 +1,3 @@
-
 use iced::theme::Slider;
 use iced::widget::{button, container, slider, text};
 use iced::{application, color, Background, Color, Vector};
@@ -104,6 +103,8 @@ pub enum Button {
     #[default]
     Days,
     Start,
+    MenuActive,
+    MenuInactive,
 }
 
 impl button::StyleSheet for Theme {
@@ -124,14 +125,37 @@ impl button::StyleSheet for Theme {
                 text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
                 ..Default::default()
             },
+            Button::MenuActive => button::Appearance {
+                background: Color::from_rgb(0.53, 0.0, 0.85).into(),
+                border_radius: 10.0,
+                border_width: 1.0,
+                border_color: Color::from_rgb(0.53, 0.0, 0.85),
+                shadow_offset: Vector::new(0.0, 0.0),
+                text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
+            },
+            Button::MenuInactive => button::Appearance {
+                background: None,
+                border_radius: 10.0,
+                border_width: 1.0,
+                border_color: Color::from_rgb(0.53, 0.0, 0.85),
+                shadow_offset: Vector::new(0.0, 0.0),
+                text_color: Color::from_rgb8(0x0, 0x0, 0x0),
+            },
         }
     }
 
     fn hovered(&self, style: &Self::Style) -> button::Appearance {
-        button::Appearance {
-            text_color: Color::WHITE,
-            shadow_offset: Vector::new(1.0, 2.0),
-            ..self.active(style)
+        match style {
+            Button::MenuInactive => button::Appearance {
+                text_color: Color::BLACK,
+                shadow_offset: Vector::new(1.0, 2.0),
+                ..self.active(style)
+            },
+            _ => button::Appearance {
+                text_color: Color::WHITE,
+                shadow_offset: Vector::new(1.0, 2.0),
+                ..self.active(style)
+            },
         }
     }
 
