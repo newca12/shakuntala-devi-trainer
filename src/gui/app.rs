@@ -241,7 +241,19 @@ impl Application for ShakuntalaDeviTrainer {
 
         let result = column![text(&self.hint).size(24)].padding(8);
 
-        let random_date = column![text(&self.random_date).size(48)].padding(8);
+        let random_date = {
+            let month = Month::from_u32(self.random_date.month()).unwrap().name();
+            let date = format!(
+                "{} {} {}",
+                self.random_date.day(),
+                month,
+                self.random_date.year()
+            );
+            match self.screen {
+                Screen::Game => column![text(date).size(48)].padding(8),
+                Screen::TrainingStep1 => column![text(month).size(48)].padding(8),
+            }
+        };
 
         let first_year = column![text(self.first_year.to_string()).size(12)];
 
