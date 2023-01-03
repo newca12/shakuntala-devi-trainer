@@ -85,7 +85,7 @@ https://mattbaker.blog/2020/04/26/mental-math-and-calendar-calculations/
 * [Rust built-in test framework does not support parameterized tests](https://stackoverflow.com/questions/34662713/how-can-i-create-parameterized-tests-in-rust)
 
 ### License ###
-© 2020-2022 Olivier ROLAND. Distributed under the GPLv3 License.
+© 2020-2023 Olivier ROLAND. Distributed under the GPLv3 License.
 
 [1]: https://en.wikipedia.org/wiki/Shakuntala_Devi
 [2]: https://edla.org/shakuntala-devi-trainer

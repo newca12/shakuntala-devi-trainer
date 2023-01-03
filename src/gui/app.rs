@@ -120,6 +120,7 @@ impl Application for ShakuntalaDeviTrainer {
                     "Which entry is the good one ?".to_string()
                 };
                 self.game_answers = Vec::new();
+                self.t2_answers = Vec::new();
                 self.start = instant::Instant::now();
             }
 
