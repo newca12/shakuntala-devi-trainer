@@ -2,5 +2,7 @@
 pub enum Screen {
     #[default]
     Game,
-    TrainingStep1,
+    Solution,
+    TrainingMonthTable,
+    TrainingYearTable,
 }

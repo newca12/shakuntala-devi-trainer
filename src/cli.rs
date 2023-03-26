@@ -22,7 +22,7 @@ pub fn run_cli() {
             shakuntala_devi_trainer::DEFAULT_FIRST_YEAR,
             shakuntala_devi_trainer::DEFAULT_LAST_YEAR,
         );
-    let mut tips = tips.iter();
+    let mut tips = tips.0.iter();
     if shakuntala_devi_answer != random_date.weekday() {
         println!("Shakuntala Devi cannot found the day of {:#?}", random_date);
         std::process::exit(-1)

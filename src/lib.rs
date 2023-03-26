@@ -3,6 +3,7 @@ use chrono::Duration;
 use num_traits::cast::FromPrimitive;
 use once_cell::sync::Lazy;
 use rand::Rng;
+use std::fmt;
 use std::{
     collections::{HashMap, VecDeque},
     convert::TryInto,
@@ -13,7 +14,7 @@ pub const MAX_YEAR: u32 = 2204;
 pub const DEFAULT_FIRST_YEAR: u32 = 1932;
 pub const DEFAULT_LAST_YEAR: u32 = 2032;
 
-static YEARS: Lazy<HashMap<i32, i32>> = Lazy::new(|| {
+pub static YEARS: Lazy<HashMap<i32, i32>> = Lazy::new(|| {
     const T3: [i32; 7] = [0, 5, 3, 1, 6, 4, 2];
     let mut years = HashMap::new();
     let mut cycled = T3.iter().cycle();
@@ -70,49 +71,82 @@ pub fn tomohiko_sakamoto(dt: NaiveDate) -> Weekday {
 //https://www.youtube.com/watch?v=4LHzUkfQ8oE&t=534s
 //https://brainly.in/question/19415705
 //https://fiat-knox.livejournal.com/1067226.html
-pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, VecDeque<String>) {
-    let mut v: VecDeque<String> = VecDeque::new();
-    let day = dt.day() % 7;
-    let day = (day as i32 + T2[dt.month0() as usize]) % 7;
-    v.push_back(format!("Step 1 is {}", day));
-    let t1 = YEARS.get(&dt.year());
-    let day = match t1 {
+pub fn shakuntala_devi_nearest_leap_year(year: i32, v: &mut Option<&mut Tips>) -> i32 {
+    let t1 = YEARS.get(&year);
+    match t1 {
         Some(result) => {
-            v.push_back(format!("Step 2 is {:#?}", result));
-            if is_leap_year(dt.year()) {
-                if dt.month() > 2 {
-                    day + result
-                } else {
-                    day + result - 1
-                }
+            if is_leap_year(year) {
+                if v.is_some() {
+                    v.as_mut().unwrap().0.push_back(format!(
+                        "leap year and direct year table entry {:#?}",
+                        result
+                    ))
+                };
+                result.to_owned()
             } else {
-                let mut nearest_leap_year = dt.year() - 1;
+                if v.is_some() {
+                    v.as_mut().unwrap().0.push_back(format!(
+                        "not a leap year but direct year table entry {:#?}",
+                        result
+                    ))
+                };
+                let mut nearest_leap_year = year - 1;
                 while !is_leap_year(nearest_leap_year) {
                     nearest_leap_year -= 1;
                 }
-                v.push_back(format!("Step 2 is {:#?}", nearest_leap_year));
-                v.push_back(format!(
-                    "Step 3 is {:#?}",
-                    YEARS.get(&nearest_leap_year).unwrap()
-                ));
-                day + YEARS.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
+                if v.is_some() {
+                    v.as_mut()
+                        .unwrap()
+                        .0
+                        .push_back(format!("nearest leap year {:#?}", nearest_leap_year));
+                    v.as_mut().unwrap().0.push_back(format!(
+                        "nearest leap year table entry {:#?}",
+                        YEARS.get(&nearest_leap_year).unwrap()
+                    ))
+                };
+                nearest_leap_year
             }
         }
         None => {
-            let mut nearest_leap_year = dt.year() - 1;
+            let mut nearest_leap_year = year - 1;
             while !is_leap_year(nearest_leap_year) {
                 nearest_leap_year -= 1;
             }
-            v.push_back(format!("Step 2 is {:#?}", nearest_leap_year));
-            v.push_back(format!(
-                "Step 3 is {:#?}",
-                YEARS.get(&nearest_leap_year).unwrap()
-            ));
-            day + YEARS.get(&nearest_leap_year).unwrap() + dt.year() - nearest_leap_year
+            if v.is_some() {
+                v.as_mut().unwrap().0.push_back(format!(
+                    "no direct year table entry, nearest leap year {:#?}",
+                    nearest_leap_year
+                ));
+                v.as_mut().unwrap().0.push_back(format!(
+                    "no direct year table entry, nearest leap year table entry {:#?}",
+                    YEARS.get(&nearest_leap_year).unwrap()
+                ))
+            };
+            nearest_leap_year
         }
-    };
+    }
+}
+pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, Tips) {
+    let mut v: Tips = Tips(VecDeque::new());
+    let day = dt.day() % 7;
+    let month_table_entry = T2[dt.month0() as usize];
+    let result1 = (day as i32 + month_table_entry) % 7;
+    v.0.push_back(format!(
+        "(day {} + month table entry {}) mod 7 = {}",
+        result1, month_table_entry, result1
+    ));
 
-    (Weekday::from_i32(day.rem_euclid(7)).unwrap().pred(), v)
+    let result2 = shakuntala_devi_nearest_leap_year(dt.year(), &mut Some(&mut v));
+    let result3 = if YEARS.get(&dt.year()).is_some() && is_leap_year(dt.year()) {
+        if dt.month() > 2 {
+            result1 + result2
+        } else {
+            result1 + result2 - 1
+        }
+    } else {
+        result1 + YEARS.get(&result2).unwrap() + dt.year() - result2
+    };
+    (Weekday::from_i32(result3.rem_euclid(7)).unwrap().pred(), v)
 }
 
 //http://mathforum.org/library/drmath/view/62324.html
@@ -179,12 +213,22 @@ pub fn random_date(from_year: u32, to_year: u32) -> NaiveDate {
     dt + Duration::days(days as i64)
 }
 
-pub fn random_date_with_tips(
-    from_year: u32,
-    to_year: u32,
-) -> (NaiveDate, Weekday, VecDeque<String>) {
+#[derive(Debug, Clone)]
+pub struct Tips(pub VecDeque<String>);
+
+impl fmt::Display for Tips {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for v in &self.0 {
+            writeln!(f, "{}", v)?;
+        }
+        Ok(())
+    }
+}
+
+pub fn random_date_with_tips(from_year: u32, to_year: u32) -> (NaiveDate, Weekday, Tips) {
     let random_date = random_date(from_year, to_year);
-    //let random_date = NaiveDate::from_ymd(1940, 1, 23);
+    //let random_date = NaiveDate::from_ymd_opt(1900, 1, 23).unwrap();
+    //let random_date = NaiveDate::from_ymd_opt(2019, 3, 4).unwrap();
     let (shakuntala_devi_answer, tips) = shakuntala_devi(random_date);
     (random_date, shakuntala_devi_answer, tips)
 }
