@@ -1,6 +1,6 @@
 [package]
 name = "shakuntala-devi-trainer"
-version = "2.0.0"
+version = "2.0.1"
 authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
 description = "Brain training tool inspired by Shakuntala Devi's technics "
 homepage = "https://github.com/newca12/shakuntala-devi-trainer"
