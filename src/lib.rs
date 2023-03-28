@@ -133,7 +133,7 @@ pub fn shakuntala_devi(dt: NaiveDate) -> (Weekday, Tips) {
     let result1 = (day as i32 + month_table_entry) % 7;
     v.0.push_back(format!(
         "(day {} + month table entry {}) mod 7 = {}",
-        result1, month_table_entry, result1
+        day, month_table_entry, result1
     ));
 
     let result2 = shakuntala_devi_nearest_leap_year(dt.year(), &mut Some(&mut v));
@@ -227,8 +227,6 @@ impl fmt::Display for Tips {
 
 pub fn random_date_with_tips(from_year: u32, to_year: u32) -> (NaiveDate, Weekday, Tips) {
     let random_date = random_date(from_year, to_year);
-    //let random_date = NaiveDate::from_ymd_opt(1900, 1, 23).unwrap();
-    //let random_date = NaiveDate::from_ymd_opt(2019, 3, 4).unwrap();
     let (shakuntala_devi_answer, tips) = shakuntala_devi(random_date);
     (random_date, shakuntala_devi_answer, tips)
 }

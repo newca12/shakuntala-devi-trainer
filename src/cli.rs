@@ -38,9 +38,12 @@ pub fn run_cli() {
             .read_line(&mut guess)
             .expect("Failed to read line");
         let guess: u32 = match guess.trim().parse() {
-            Ok(num) => num, //{ if (0..7).contains(num) { num } else { continue } },
+            Ok(num) => num,
             Err(_) => continue,
         };
+        if !(0..7).contains(&guess) {
+            continue;
+        }
         let guess = Weekday::from_u32(guess).unwrap().pred();
         println!("Your answer is {}", guess);
         if guess == shakuntala_devi_answer {

@@ -12,10 +12,10 @@ license = "GPL-3.0-or-later"
 
 [dependencies]
 chrono = "0.4.24"
-clap = { version = "4.1.11", features = ["derive"] }
+clap = { version = "4.1.13", features = ["derive"] }
 getrandom = { version = "0.2.8", features = ["js"] }
 iced = "0.8.0"
-image = { version = "0.24.5", features = ["ico"], default-features = false }
+image = { version = "0.24.6", features = ["ico"], default-features = false }
 instant = { version = "0.1.12", features = [ "wasm-bindgen", "inaccurate" ] }
 num-traits = "0.2.15"
 once_cell = "1.17.1"

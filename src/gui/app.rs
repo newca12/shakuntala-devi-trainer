@@ -110,7 +110,6 @@ impl Application for ShakuntalaDeviTrainer {
             }
 
             Message::Reset => {
-                //self.screen = Screen::Game;
                 let (random_date, shakuntala_devi_answer, tips) =
                     shakuntala_devi_trainer::random_date_with_tips(self.first_year, self.last_year);
                 self.week_day = shakuntala_devi_answer;
