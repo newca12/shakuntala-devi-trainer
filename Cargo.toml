@@ -12,7 +12,7 @@ license = "GPL-3.0-or-later"
 
 [dependencies]
 chrono = "0.4.24"
-clap = { version = "4.1.13", features = ["derive"] }
+clap = { version = "4.2.1", features = ["derive"] }
 getrandom = { version = "0.2.8", features = ["js"] }
 iced = "0.8.0"
 image = { version = "0.24.6", features = ["ico"], default-features = false }

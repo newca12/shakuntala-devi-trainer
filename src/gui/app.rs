@@ -22,8 +22,8 @@ pub(crate) struct ShakuntalaDeviTrainer {
     random_date: NaiveDate,
     week_day: Weekday,
     game_answers: [bool; 7],
-    t2_answers: [bool; 7],
-    t3_answers: [bool; 13],
+    month_table_answers: [bool; 7],
+    year_table_answers: [bool; 13],
     tips: Tips,
     hint: String,
     start: instant::Instant,
@@ -67,8 +67,8 @@ impl Application for ShakuntalaDeviTrainer {
                 random_date,
                 week_day: shakuntala_devi_answer,
                 game_answers: [false; 7],
-                t2_answers: [false; 7],
-                t3_answers: [false; 13],
+                month_table_answers: [false; 7],
+                year_table_answers: [false; 13],
                 tips,
                 hint: "Guess the day!".to_string(),
                 start: instant::Instant::now(),
@@ -121,8 +121,8 @@ impl Application for ShakuntalaDeviTrainer {
                     _ => "Which entry is the good one ?".to_string(),
                 };
                 self.game_answers = [false; 7];
-                self.t2_answers = [false; 7];
-                self.t3_answers = [false; 13];
+                self.month_table_answers = [false; 7];
+                self.year_table_answers = [false; 13];
                 self.start = instant::Instant::now();
             }
 
@@ -147,9 +147,9 @@ impl Application for ShakuntalaDeviTrainer {
             }
 
             Message::GuessMonthTable(guess) => {
-                self.t2_answers[usize::try_from(guess).ok().unwrap()] = true;
+                self.month_table_answers[usize::try_from(guess).ok().unwrap()] = true;
                 if T2[self.random_date.month0() as usize] == guess {
-                    self.t2_answers = [true; 7];
+                    self.month_table_answers = [true; 7];
                     self.hint = format!("Congratulation ! {} is the right answer", guess)
                 } else {
                     self.hint = "Try again".to_string()
@@ -157,7 +157,7 @@ impl Application for ShakuntalaDeviTrainer {
             }
 
             Message::GuessYearTable(guess) => {
-                self.t3_answers[usize::try_from(guess).ok().unwrap()] = true;
+                self.year_table_answers[usize::try_from(guess).ok().unwrap()] = true;
                 let versatile_answer =
                     shakuntala_devi_nearest_leap_year(self.random_date.year(), &mut None);
                 let answer = if versatile_answer > 12 {
@@ -166,7 +166,7 @@ impl Application for ShakuntalaDeviTrainer {
                     &versatile_answer
                 };
                 if *answer == guess {
-                    self.t3_answers = [true; 13];
+                    self.year_table_answers = [true; 13];
                     self.hint = format!("Congratulation ! {} is the right answer", guess)
                 } else {
                     self.hint = if versatile_answer > 12 {
@@ -367,29 +367,29 @@ impl Application for ShakuntalaDeviTrainer {
         ];
 
         let t3 = row![
-            column_t2("0", 0, self.t2_answers[0],),
-            column_t2("1", 1, self.t2_answers[1],),
-            column_t2("2", 2, self.t2_answers[2],),
-            column_t2("3", 3, self.t2_answers[3],),
-            column_t2("4", 4, self.t2_answers[4],),
-            column_t2("5", 5, self.t2_answers[5],),
-            column_t2("6", 6, self.t2_answers[6],),
+            column_t2("0", 0, self.month_table_answers[0],),
+            column_t2("1", 1, self.month_table_answers[1],),
+            column_t2("2", 2, self.month_table_answers[2],),
+            column_t2("3", 3, self.month_table_answers[3],),
+            column_t2("4", 4, self.month_table_answers[4],),
+            column_t2("5", 5, self.month_table_answers[5],),
+            column_t2("6", 6, self.month_table_answers[6],),
         ];
 
         let t3_year = row![
-            column_t3("0", 0, self.t3_answers[0],),
-            column_t3("1", 1, self.t3_answers[1],),
-            column_t3("2", 2, self.t3_answers[2],),
-            column_t3("3", 3, self.t3_answers[3],),
-            column_t3("4", 4, self.t3_answers[4],),
-            column_t3("5", 5, self.t3_answers[5],),
-            column_t3("6", 6, self.t3_answers[6],),
-            column_t3("7", 7, self.t3_answers[7],),
-            column_t3("8", 8, self.t3_answers[8],),
-            column_t3("9", 9, self.t3_answers[9],),
-            column_t3("10", 10, self.t3_answers[10],),
-            column_t3("11", 11, self.t3_answers[11],),
-            column_t3("12", 12, self.t3_answers[12],),
+            column_t3("0", 0, self.year_table_answers[0],),
+            column_t3("1", 1, self.year_table_answers[1],),
+            column_t3("2", 2, self.year_table_answers[2],),
+            column_t3("3", 3, self.year_table_answers[3],),
+            column_t3("4", 4, self.year_table_answers[4],),
+            column_t3("5", 5, self.year_table_answers[5],),
+            column_t3("6", 6, self.year_table_answers[6],),
+            column_t3("7", 7, self.year_table_answers[7],),
+            column_t3("8", 8, self.year_table_answers[8],),
+            column_t3("9", 9, self.year_table_answers[9],),
+            column_t3("10", 10, self.year_table_answers[10],),
+            column_t3("11", 11, self.year_table_answers[11],),
+            column_t3("12", 12, self.year_table_answers[12],),
         ];
 
         let solution = row![text(format!("{}", self.tips))];

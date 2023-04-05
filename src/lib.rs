@@ -201,6 +201,46 @@ pub fn svm_86(dt: NaiveDate) -> Weekday {
     Weekday::from_u32(distance % 7).unwrap()
 }
 
+pub const DOOMSDAY_COMMON_YEAR: [i32; 12] = [3, 28, 7, 4, 9, 6, 11, 8, 5, 10, 7, 12];
+pub const DOOMSDAY_LEAP_YEAR: [i32; 12] = [4, 29, 7, 4, 9, 6, 11, 8, 5, 10, 7, 12];
+
+pub fn anchor_day(year: i32) -> i32 {
+    if year >= 1800 && year <= 1899 {
+        5
+    } else if year >= 1900 && year <= 1999 {
+        3
+    } else if year >= 2000 && year <= 2099 {
+        2
+    } else if year >= 2100 && year <= 2199 {
+        0
+    } else {
+        panic!("year not supported")
+    }
+}
+
+pub fn conway_doomsday(dt: NaiveDate) -> Weekday {
+    let two_digit = dt.year() % 100;
+    let step1 = two_digit / 12;
+    let step2 = two_digit - (12 * step1);
+    let step3 = step2 / 4;
+    let step4 = anchor_day(dt.year());
+    let step5 = step1 + step2 + step3 + step4;
+    let step6 = step5 % 7;
+    let step7 = if is_leap_year(dt.year()) {
+        DOOMSDAY_LEAP_YEAR[dt.month0() as usize]
+    } else {
+        DOOMSDAY_COMMON_YEAR[dt.month0() as usize]
+    };
+    let step8 = if dt.day() as i32 > step7 {
+        (dt.day() as i32 - step7) + step6
+    } else {
+        (step6 - (step7 - dt.day() as i32)) % 7
+    };
+    let result = step8 % 7;
+    let result = if result < 0 { result + 7 } else { result } as u32;
+    Weekday::from_u32(result).unwrap().pred()
+}
+
 pub fn random_date(from_year: u32, to_year: u32) -> NaiveDate {
     let start = NaiveDate::from_ymd_opt(from_year.try_into().unwrap(), 1, 1)
         .unwrap()
@@ -227,6 +267,7 @@ impl fmt::Display for Tips {
 
 pub fn random_date_with_tips(from_year: u32, to_year: u32) -> (NaiveDate, Weekday, Tips) {
     let random_date = random_date(from_year, to_year);
+    //let random_date = NaiveDate::from_ymd_opt(1980, 2, 1).unwrap();
     let (shakuntala_devi_answer, tips) = shakuntala_devi(random_date);
     (random_date, shakuntala_devi_answer, tips)
 }
@@ -302,6 +343,17 @@ fn svm_86_check() {
     for dt in calendar {
         assert_eq!(svm_86(dt), dt.weekday(), "testing {}", dt);
         if dt.year() == 10000 {
+            break;
+        };
+    }
+}
+
+#[test]
+fn conway_check() {
+    let calendar = NaiveDate::from_ymd_opt(1800, 1, 1).unwrap().iter_days();
+    for dt in calendar {
+        assert_eq!(conway_doomsday(dt), dt.weekday(), "testing {}", dt);
+        if dt.year() == 2199 {
             break;
         };
     }
