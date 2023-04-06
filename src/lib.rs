@@ -205,13 +205,13 @@ pub const DOOMSDAY_COMMON_YEAR: [i32; 12] = [3, 28, 7, 4, 9, 6, 11, 8, 5, 10, 7,
 pub const DOOMSDAY_LEAP_YEAR: [i32; 12] = [4, 29, 7, 4, 9, 6, 11, 8, 5, 10, 7, 12];
 
 pub fn anchor_day(year: i32) -> i32 {
-    if year >= 1800 && year <= 1899 {
+    if (1800..=1899).contains(&year) {
         5
-    } else if year >= 1900 && year <= 1999 {
+    } else if (1900..=1999).contains(&year) {
         3
-    } else if year >= 2000 && year <= 2099 {
+    } else if (2000..=2099).contains(&year) {
         2
-    } else if year >= 2100 && year <= 2199 {
+    } else if (2100..=2199).contains(&year) {
         0
     } else {
         panic!("year not supported")
@@ -373,7 +373,7 @@ fn leap_year_check() {
 
 #[test]
 fn leap_year_reverse_check() {
-    for year in 1853..2200 {
+    for year in 1853..2204 {
         if is_leap_year(year) {
             assert!(YEARS.get(&year) != None)
         };

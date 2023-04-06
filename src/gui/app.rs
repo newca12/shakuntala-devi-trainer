@@ -2,6 +2,7 @@ use crate::gui::theme::Theme;
 use crate::gui::widget::Element;
 
 use chrono::prelude::*;
+use enum_map::EnumMap;
 use num_traits::cast::FromPrimitive;
 
 use iced::{
@@ -25,7 +26,7 @@ pub(crate) struct ShakuntalaDeviTrainer {
     month_table_answers: [bool; 7],
     year_table_answers: [bool; 13],
     tips: Tips,
-    hint: String,
+    hint: EnumMap<Screen, String>,
     start: instant::Instant,
 }
 
@@ -70,7 +71,12 @@ impl Application for ShakuntalaDeviTrainer {
                 month_table_answers: [false; 7],
                 year_table_answers: [false; 13],
                 tips,
-                hint: "Guess the day!".to_string(),
+                hint: enum_map! {
+                    Screen::Game => "Guess the day!".to_string(),
+                    Screen::Solution => "".to_string(),
+                    Screen::TrainingMonthTable => "Which entry is the good one ?".to_string(),
+                    Screen::TrainingYearTable => "Which entry is the good one ?".to_string(),
+                },
                 start: instant::Instant::now(),
             },
             iced::Command::none(),
@@ -106,7 +112,7 @@ impl Application for ShakuntalaDeviTrainer {
                         None => "Sorry, no more tips".to_string(),
                     }
                 };
-                self.hint = result;
+                self.hint[self.screen] = result;
             }
 
             Message::Reset => {
@@ -115,10 +121,11 @@ impl Application for ShakuntalaDeviTrainer {
                 self.week_day = shakuntala_devi_answer;
                 self.random_date = random_date;
                 self.tips = tips;
-                self.hint = match self.screen {
+                self.hint = enum_map! {
                     Screen::Game => "Guess the day!".to_string(),
                     Screen::Solution => "".to_string(),
-                    _ => "Which entry is the good one ?".to_string(),
+                    Screen::TrainingMonthTable => "Which entry is the good one ?".to_string(),
+                    Screen::TrainingYearTable => "Which entry is the good one ?".to_string(),
                 };
                 self.game_answers = [false; 7];
                 self.month_table_answers = [false; 7];
@@ -128,31 +135,28 @@ impl Application for ShakuntalaDeviTrainer {
 
             Message::TrainingMonthTableMode => {
                 self.screen = Screen::TrainingMonthTable;
-                self.hint = "Which entry is the good one ?".to_string()
             }
 
             Message::TrainingYearTableMode => {
                 self.screen = Screen::TrainingYearTable;
-                self.hint = "Which entry is the good one ?".to_string()
             }
 
             Message::GameMode => {
                 self.screen = Screen::Game;
-                self.hint = "Guess the day!".to_string()
             }
 
             Message::SolutionMode => {
                 self.screen = Screen::Solution;
-                self.hint = "".to_string()
             }
 
             Message::GuessMonthTable(guess) => {
                 self.month_table_answers[usize::try_from(guess).ok().unwrap()] = true;
                 if T2[self.random_date.month0() as usize] == guess {
                     self.month_table_answers = [true; 7];
-                    self.hint = format!("Congratulation ! {} is the right answer", guess)
+                    self.hint[self.screen] =
+                        format!("Congratulation ! {} is the right answer", guess)
                 } else {
-                    self.hint = "Try again".to_string()
+                    self.hint[self.screen] = "Try again".to_string()
                 };
             }
 
@@ -167,9 +171,10 @@ impl Application for ShakuntalaDeviTrainer {
                 };
                 if *answer == guess {
                     self.year_table_answers = [true; 13];
-                    self.hint = format!("Congratulation ! {} is the right answer", guess)
+                    self.hint[self.screen] =
+                        format!("Congratulation ! {} is the right answer", guess)
                 } else {
-                    self.hint = if versatile_answer > 12 {
+                    self.hint[self.screen] = if versatile_answer > 12 {
                         format!("Try again. Tips: the year is {}", versatile_answer)
                     } else {
                         "Try again, this is a direct year table entry".to_string()
@@ -324,7 +329,7 @@ impl Application for ShakuntalaDeviTrainer {
             .padding(1)
         };
 
-        let result = column![text(&self.hint).size(24)].padding(8);
+        let result = column![text(&self.hint[self.screen]).size(24)].padding(8);
 
         let random_date = {
             let month = Month::from_u32(self.random_date.month()).unwrap().name();
