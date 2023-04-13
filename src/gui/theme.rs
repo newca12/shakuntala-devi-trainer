@@ -29,7 +29,10 @@ impl slider::StyleSheet for Theme {
 
     fn active(&self, _style: &Self::Style) -> slider::Appearance {
         slider::Appearance {
-            rail_colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
+            rail: slider::Rail {
+                colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
+                width: 2.0,
+            },
             handle: {
                 slider::Handle {
                     shape: iced::widget::slider::HandleShape::Rectangle {
@@ -46,7 +49,10 @@ impl slider::StyleSheet for Theme {
 
     fn hovered(&self, _style: &Self::Style) -> slider::Appearance {
         slider::Appearance {
-            rail_colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
+            rail: slider::Rail {
+                colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
+                width: 2.0,
+            },
             handle: {
                 slider::Handle {
                     shape: iced::widget::slider::HandleShape::Rectangle {
@@ -63,7 +69,10 @@ impl slider::StyleSheet for Theme {
 
     fn dragging(&self, _style: &Self::Style) -> slider::Appearance {
         slider::Appearance {
-            rail_colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
+            rail: slider::Rail {
+                colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
+                width: 2.0,
+            },
             handle: {
                 slider::Handle {
                     shape: iced::widget::slider::HandleShape::Rectangle {
