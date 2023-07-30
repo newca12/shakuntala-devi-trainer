@@ -51,7 +51,7 @@ impl Application for ShakuntalaDeviTrainer {
     type Flags = ();
 
     fn theme(&self) -> Theme {
-        Theme::default()
+        Theme
     }
 
     fn new(_flags: ()) -> (ShakuntalaDeviTrainer, iced::Command<Message>) {
@@ -101,10 +101,10 @@ impl Application for ShakuntalaDeviTrainer {
                 let result = if guess_day == self.week_day {
                     self.game_answers = [true; 7];
                     format!(
-                        "Congratulation ! You found {} after {} guess in {:#?}",
+                        "Congratulation ! You found {} after {} guess in {:#?}s",
                         guess_day,
                         tries,
-                        self.start.elapsed()
+                        self.start.elapsed().as_secs()
                     )
                 } else {
                     match self.tips.0.get(tries - 1) {
@@ -201,7 +201,7 @@ impl Application for ShakuntalaDeviTrainer {
         let reset_button = column![button(
             text("Start new game")
                 .horizontal_alignment(alignment::Horizontal::Center)
-                .size(16),
+                .size(14),
         )
         .padding(8)
         .on_press(Message::Reset)
@@ -211,7 +211,7 @@ impl Application for ShakuntalaDeviTrainer {
         let menu_game = column![button(
             text("DAY TRAINING MODE")
                 .horizontal_alignment(alignment::Horizontal::Center)
-                .size(16),
+                .size(14),
         )
         .padding(8)
         .on_press(Message::GameMode)
@@ -225,7 +225,7 @@ impl Application for ShakuntalaDeviTrainer {
         let menu_month_table = column![button(
             text("MONTH TABLE")
                 .horizontal_alignment(alignment::Horizontal::Center)
-                .size(16),
+                .size(14),
         )
         .padding(8)
         .on_press(Message::TrainingMonthTableMode)
@@ -239,7 +239,7 @@ impl Application for ShakuntalaDeviTrainer {
         let menu_year_table = column![button(
             text("YEAR TABLE")
                 .horizontal_alignment(alignment::Horizontal::Center)
-                .size(16),
+                .size(14),
         )
         .padding(8)
         .on_press(Message::TrainingYearTableMode)
@@ -253,7 +253,7 @@ impl Application for ShakuntalaDeviTrainer {
         let menu_solution = column![button(
             text("SOLUTION")
                 .horizontal_alignment(alignment::Horizontal::Center)
-                .size(16),
+                .size(14),
         )
         .padding(8)
         .on_press(Message::SolutionMode)
@@ -271,14 +271,14 @@ impl Application for ShakuntalaDeviTrainer {
                 button(
                     text(label)
                         .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(16),
+                        .size(14),
                 )
                 .padding(8)
             } else {
                 button(
                     text(label)
                         .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(16),
+                        .size(14),
                 )
                 .padding(8)
                 .on_press(Message::GuessDay(weekday))
@@ -292,14 +292,14 @@ impl Application for ShakuntalaDeviTrainer {
                 button(
                     text(label)
                         .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(16),
+                        .size(14),
                 )
                 .padding(8)
             } else {
                 button(
                     text(label)
                         .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(16),
+                        .size(14),
                 )
                 .padding(8)
                 .on_press(Message::GuessMonthTable(weekday))
@@ -313,14 +313,14 @@ impl Application for ShakuntalaDeviTrainer {
                 button(
                     text(label)
                         .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(16),
+                        .size(14),
                 )
                 .padding(8)
             } else {
                 button(
                     text(label)
                         .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(16),
+                        .size(14),
                 )
                 .padding(8)
                 .on_press(Message::GuessYearTable(weekday))
@@ -329,23 +329,23 @@ impl Application for ShakuntalaDeviTrainer {
             .padding(1)
         };
 
-        let result = column![text(&self.hint[self.screen]).size(24)].padding(8);
+        let result = column![text(&self.hint[self.screen]).size(20)].padding(8);
 
         let random_date = {
             let month = Month::from_u32(self.random_date.month()).unwrap().name();
             let year = self.random_date.year();
             let date = format!("{} {} {}", self.random_date.day(), month, year);
             match self.screen {
-                Screen::Game => column![text(date).size(48)].padding(8),
-                Screen::TrainingMonthTable => column![text(month).size(48)].padding(8),
-                Screen::TrainingYearTable => column![text(year).size(48)].padding(8),
-                Screen::Solution => column![text(date).size(48)].padding(8),
+                Screen::Game => column![text(date).size(40)].padding(8),
+                Screen::TrainingMonthTable => column![text(month).size(40)].padding(8),
+                Screen::TrainingYearTable => column![text(year).size(40)].padding(8),
+                Screen::Solution => column![text(date).size(40)].padding(8),
             }
         };
 
-        let first_year = column![text(self.first_year.to_string()).size(12)];
+        let first_year = column![text(self.first_year.to_string()).size(10)];
 
-        let last_year = column![text(self.last_year.to_string()).size(12)];
+        let last_year = column![text(self.last_year.to_string()).size(10)];
 
         let first_year_slider = column![Slider::new(
             shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,

@@ -32,12 +32,13 @@ impl slider::StyleSheet for Theme {
             rail: slider::Rail {
                 colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
                 width: 2.0,
+                border_radius: 2.0.into(),
             },
             handle: {
                 slider::Handle {
                     shape: iced::widget::slider::HandleShape::Rectangle {
                         width: 8,
-                        border_radius: 12.0,
+                        border_radius: 12.0.into(),
                     },
                     color: color!(0x9c, 0x9c, 0x9c),
                     border_width: (1.0),
@@ -52,12 +53,13 @@ impl slider::StyleSheet for Theme {
             rail: slider::Rail {
                 colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
                 width: 2.0,
+                border_radius: 2.0.into(),
             },
             handle: {
                 slider::Handle {
                     shape: iced::widget::slider::HandleShape::Rectangle {
                         width: 8,
-                        border_radius: 12.0,
+                        border_radius: 12.0.into(),
                     },
                     color: color!(0xfc, 0xfc, 0xfc),
                     border_width: (1.0),
@@ -72,12 +74,13 @@ impl slider::StyleSheet for Theme {
             rail: slider::Rail {
                 colors: (color!(0xda, 0xda, 0xda), color!(0xda, 0xda, 0xda)),
                 width: 2.0,
+                border_radius: 2.0.into(),
             },
             handle: {
                 slider::Handle {
                     shape: iced::widget::slider::HandleShape::Rectangle {
                         width: 8,
-                        border_radius: 12.0,
+                        border_radius: 12.0.into(),
                     },
                     color: color!(0xda, 0xda, 0xda),
                     border_width: (1.0),
@@ -121,22 +124,22 @@ impl button::StyleSheet for Theme {
     fn active(&self, style: &Self::Style) -> button::Appearance {
         match style {
             Button::Days => button::Appearance {
-                background: Color::from_rgb(0.11, 0.42, 0.87).into(),
-                border_radius: 12.0,
+                background: Some(Color::from_rgb(0.11, 0.42, 0.87).into()),
+                border_radius: 12.0.into(),
                 shadow_offset: Vector::new(1.0, 1.0),
                 text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
                 ..Default::default()
             },
             Button::Start => button::Appearance {
-                background: Color::from_rgb(0.11, 0.67, 0.11).into(),
-                border_radius: 12.0,
+                background: Some(Color::from_rgb(0.11, 0.67, 0.11).into()),
+                border_radius: 12.0.into(),
                 shadow_offset: Vector::new(1.0, 1.0),
                 text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
                 ..Default::default()
             },
             Button::MenuActive => button::Appearance {
-                background: Color::from_rgb(0.53, 0.0, 0.85).into(),
-                border_radius: 10.0,
+                background: Some(Color::from_rgb(0.53, 0.0, 0.85).into()),
+                border_radius: 10.0.into(),
                 border_width: 1.0,
                 border_color: Color::from_rgb(0.53, 0.0, 0.85),
                 shadow_offset: Vector::new(0.0, 0.0),
@@ -144,7 +147,7 @@ impl button::StyleSheet for Theme {
             },
             Button::MenuInactive => button::Appearance {
                 background: None,
-                border_radius: 10.0,
+                border_radius: 10.0.into(),
                 border_width: 1.0,
                 border_color: Color::from_rgb(0.53, 0.0, 0.85),
                 shadow_offset: Vector::new(0.0, 0.0),
@@ -178,6 +181,7 @@ impl button::StyleSheet for Theme {
                     a: color.a * 0.7,
                     ..color
                 }),
+                Background::Gradient(gradient) => Background::Gradient(gradient.mul_alpha(0.5)),
             }),
             text_color: Color {
                 a: active.text_color.a * 0.7,
