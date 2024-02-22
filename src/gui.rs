@@ -1,13 +1,12 @@
-use iced::{Application, Settings};
+use iced::{Application, Settings, Size};
 
 pub mod app;
 pub mod common;
 pub mod theme;
-pub mod widget;
 
 pub fn run_gui() {
     let mut settings = Settings::default();
-    settings.window.size = (600u32, 350u32);
+    settings.window.size = Size::new(600f32, 350f32);
     settings.window.icon = match image::load_from_memory(include_bytes!("../assets/calendar.png")) {
         Ok(buffer) => {
             let buffer = buffer.to_rgba8();

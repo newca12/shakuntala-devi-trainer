@@ -1,8 +1,8 @@
 [package]
 name = "shakuntala-devi-trainer"
-version = "2.0.4"
+version = "2.0.5"
 authors = ["Olivier ROLAND <newca12@users.noreply.github.com>"]
-description = "Brain training tool inspired by Shakuntala Devi's technics "
+description = "Brain training tool inspired by Shakuntala Devi's technics"
 homepage = "https://github.com/newca12/shakuntala-devi-trainer"
 repository = "https://github.com/newca12/shakuntala-devi-trainer"
 keywords = ["game","brain-training", "cli","gui","program"]
@@ -11,13 +11,13 @@ edition = "2021"
 license = "GPL-3.0-or-later"
 
 [dependencies]
-chrono = "0.4.26"
-clap = { version = "4.3.19", features = ["derive"] }
-enum-map = "2.6.0"
-getrandom = { version = "0.2.10", features = ["js"] }
-iced = "0.10.0"
-image = { version = "0.24.6", features = ["ico"], default-features = false }
+chrono = "0.4.34"
+clap = { version = "4.5.1", features = ["derive"] }
+enum-map = "2.7.3"
+getrandom = { version = "0.2.12", features = ["js"] }
+iced = { version="0.12.1", features = ["image", "debug", "webgl", "fira-sans"]  }
+image = { version = "0.24.8", features = ["ico"], default-features = false }
 instant = { version = "0.1.12", features = [ "wasm-bindgen", "inaccurate" ] }
-num-traits = "0.2.16"
-once_cell = "1.18.0"
+num-traits = "0.2.18"
+once_cell = "1.19.0"
 rand = "0.8.5"

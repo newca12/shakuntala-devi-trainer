@@ -68,9 +68,6 @@ cargo install -f wasm-bindgen-cli
 cargo build --target wasm32-unknown-unknown
 wasm-bindgen target/wasm32-unknown-unknown/debug/shakuntala-devi-trainer.wasm --out-dir shakuntala-devi-trainer  --web
 ```
-Known issues :
-* [Web canvas is stuck at fixed size](https://github.com/iced-rs/iced/issues/1265)
-* [Some glitch with firefox](https://github.com/iced-rs/iced/pull/1096#pullrequestreview-866907637)
 
 ### Alternate systems for mentally calculating the day of the week for any given date. ###
 
@@ -85,7 +82,7 @@ https://mattbaker.blog/2020/04/26/mental-math-and-calendar-calculations/
 * [Rust built-in test framework does not support parameterized tests](https://stackoverflow.com/questions/34662713/how-can-i-create-parameterized-tests-in-rust)
 
 ### License ###
-© 2020-2023 Olivier ROLAND. Distributed under the GPLv3 License.
+© 2020-2024 Olivier ROLAND. Distributed under the GPLv3 License.
 
 [1]: https://en.wikipedia.org/wiki/Shakuntala_Devi
 [2]: https://edla.org/shakuntala-devi-trainer

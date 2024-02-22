@@ -1,5 +1,4 @@
 use crate::gui::theme::Theme;
-use crate::gui::widget::Element;
 
 use chrono::prelude::*;
 use enum_map::EnumMap;
@@ -8,8 +7,9 @@ use num_traits::cast::FromPrimitive;
 use iced::{
     alignment, executor,
     widget::{button, column, row, text, Container, Slider},
-    Alignment, Application, Length,
+    Alignment, Application, Element, Length,
 };
+
 use shakuntala_devi_trainer::{shakuntala_devi_nearest_leap_year, Tips, T2, YEARS};
 
 use crate::gui::common::Screen;
@@ -49,10 +49,6 @@ impl Application for ShakuntalaDeviTrainer {
     type Theme = Theme;
     type Executor = executor::Default;
     type Flags = ();
-
-    fn theme(&self) -> Theme {
-        Theme
-    }
 
     fn new(_flags: ()) -> (ShakuntalaDeviTrainer, iced::Command<Message>) {
         let (random_date, shakuntala_devi_answer, tips) =
@@ -197,7 +193,7 @@ impl Application for ShakuntalaDeviTrainer {
         iced::Command::none()
     }
 
-    fn view(&self) -> Element<Message> {
+    fn view(&self) -> Element<Message, Theme> {
         let reset_button = column![button(
             text("Start new game")
                 .horizontal_alignment(alignment::Horizontal::Center)
@@ -435,5 +431,17 @@ impl Application for ShakuntalaDeviTrainer {
             .center_x()
             .center_y()
             .into()
+    }
+
+    fn style(&self) -> <Self::Theme as iced::application::StyleSheet>::Style {
+        <Self::Theme as iced::application::StyleSheet>::Style::default()
+    }
+
+    fn subscription(&self) -> iced::Subscription<Self::Message> {
+        iced::Subscription::none()
+    }
+
+    fn scale_factor(&self) -> f64 {
+        1.0
     }
 }

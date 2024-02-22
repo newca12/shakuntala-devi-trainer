@@ -1,6 +1,6 @@
 use iced::theme::Slider;
 use iced::widget::{button, container, slider, text};
-use iced::{application, color, Background, Color, Vector};
+use iced::{application, color, Background, Border, Color, Vector};
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Theme;
@@ -125,33 +125,39 @@ impl button::StyleSheet for Theme {
         match style {
             Button::Days => button::Appearance {
                 background: Some(Color::from_rgb(0.11, 0.42, 0.87).into()),
-                border_radius: 12.0.into(),
+                border: Border::with_radius(12.0),
                 shadow_offset: Vector::new(1.0, 1.0),
                 text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
                 ..Default::default()
             },
             Button::Start => button::Appearance {
                 background: Some(Color::from_rgb(0.11, 0.67, 0.11).into()),
-                border_radius: 12.0.into(),
+                border: Border::with_radius(12.0),
                 shadow_offset: Vector::new(1.0, 1.0),
                 text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
                 ..Default::default()
             },
             Button::MenuActive => button::Appearance {
                 background: Some(Color::from_rgb(0.53, 0.0, 0.85).into()),
-                border_radius: 10.0.into(),
-                border_width: 1.0,
-                border_color: Color::from_rgb(0.53, 0.0, 0.85),
+                border: Border {
+                    radius: 10.0.into(),
+                    width: 1.0,
+                    color: Color::from_rgb(0.53, 0.0, 0.85),
+                },
                 shadow_offset: Vector::new(0.0, 0.0),
                 text_color: Color::from_rgb8(0xEE, 0xEE, 0xEE),
+                ..Default::default()
             },
             Button::MenuInactive => button::Appearance {
                 background: None,
-                border_radius: 10.0.into(),
-                border_width: 1.0,
-                border_color: Color::from_rgb(0.53, 0.0, 0.85),
+                border: Border {
+                    radius: 10.0.into(),
+                    width: 1.0,
+                    color: Color::from_rgb(0.53, 0.0, 0.85),
+                },
                 shadow_offset: Vector::new(0.0, 0.0),
                 text_color: Color::from_rgb8(0x0, 0x0, 0x0),
+                ..Default::default()
             },
         }
     }
