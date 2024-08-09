@@ -1,7 +1,7 @@
 use chrono::prelude::*;
 use chrono::Duration;
 use num_traits::cast::FromPrimitive;
-use once_cell::sync::Lazy;
+use std::sync::LazyLock;
 use rand::Rng;
 use std::fmt;
 use std::{
@@ -14,7 +14,7 @@ pub const MAX_YEAR: u32 = 2204;
 pub const DEFAULT_FIRST_YEAR: u32 = 1932;
 pub const DEFAULT_LAST_YEAR: u32 = 2032;
 
-pub static YEARS: Lazy<HashMap<i32, i32>> = Lazy::new(|| {
+pub static YEARS: LazyLock<HashMap<i32, i32>> = LazyLock::new(|| {
     const T3: [i32; 7] = [0, 5, 3, 1, 6, 4, 2];
     let mut years = HashMap::new();
     let mut cycled = T3.iter().cycle();

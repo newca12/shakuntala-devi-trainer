@@ -77,7 +77,6 @@ https://mattbaker.blog/2020/04/26/mental-math-and-calendar-calculations/
 * [Modulo of negative numbers shows languages in two different camps.](https://torstencurdt.com/tech/posts/modulo-of-negative-numbers)  
 * Rust conveniently allow infinite lazy stream with iterator
 * num-traits is required for Weekday::from_u32
-* once_cell is required to provide a singleton HashMap
 * [By default Rust test programs hide the stdout of successful tests](https://stackoverflow.com/a/25107081)
 * [Rust built-in test framework does not support parameterized tests](https://stackoverflow.com/questions/34662713/how-can-i-create-parameterized-tests-in-rust)
 
