@@ -1,9 +1,9 @@
 use chrono::prelude::*;
 use chrono::Duration;
 use num_traits::cast::FromPrimitive;
-use std::sync::LazyLock;
 use rand::Rng;
 use std::fmt;
+use std::sync::LazyLock;
 use std::{
     collections::{HashMap, VecDeque},
     convert::TryInto,
