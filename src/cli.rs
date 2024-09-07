@@ -23,6 +23,7 @@ pub fn run_cli() {
             shakuntala_devi_trainer::DEFAULT_LAST_YEAR,
         );
     let mut tips = tips.0.iter();
+    let mut tries = 0;
     if shakuntala_devi_answer != random_date.weekday() {
         println!("Shakuntala Devi cannot found the day of {:#?}", random_date);
         std::process::exit(-1)
@@ -46,8 +47,14 @@ pub fn run_cli() {
         }
         let guess = Weekday::from_u32(guess).unwrap().pred();
         println!("Your answer is {}", guess);
+        tries += 1;
         if guess == shakuntala_devi_answer {
-            println!("Congratulation !");
+            println!(
+                "Congratulation ! You found {} after {} guess in {:#?}s",
+                guess,
+                tries,
+                start.elapsed().as_secs()
+            );
             break;
         } else {
             match tips.next() {
@@ -56,6 +63,4 @@ pub fn run_cli() {
             };
         }
     }
-    let duration = start.elapsed();
-    println!("Total time {:#?}", duration);
 }

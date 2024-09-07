@@ -45,6 +45,9 @@ pub static YEARS: LazyLock<HashMap<i32, i32>> = LazyLock::new(|| {
     for year in (2100..2200).step_by(4) {
         years.insert(year, 4 + *cycled.next().unwrap());
     }
+    for year in years.values_mut() {
+        *year %= 7;
+    }
     years
 });
 

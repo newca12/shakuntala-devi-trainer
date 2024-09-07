@@ -171,7 +171,10 @@ impl Application for ShakuntalaDeviTrainer {
                         format!("Congratulation ! {} is the right answer", guess)
                 } else {
                     self.hint[self.screen] = if versatile_answer > 12 {
-                        format!("Try again. Tips: the year is {}", versatile_answer)
+                        format!(
+                            "Try again. Tips: no direct year table entry, nearest leap year {}",
+                            versatile_answer
+                        )
                     } else {
                         "Try again, this is a direct year table entry".to_string()
                     }
@@ -385,12 +388,6 @@ impl Application for ShakuntalaDeviTrainer {
             column_t3("4", 4, self.year_table_answers[4],),
             column_t3("5", 5, self.year_table_answers[5],),
             column_t3("6", 6, self.year_table_answers[6],),
-            column_t3("7", 7, self.year_table_answers[7],),
-            column_t3("8", 8, self.year_table_answers[8],),
-            column_t3("9", 9, self.year_table_answers[9],),
-            column_t3("10", 10, self.year_table_answers[10],),
-            column_t3("11", 11, self.year_table_answers[11],),
-            column_t3("12", 12, self.year_table_answers[12],),
         ];
 
         let solution = row![text(format!("{}", self.tips))];

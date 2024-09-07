@@ -65,8 +65,8 @@ or built it yourself :
 ```
 rustup target add wasm32-unknown-unknown
 cargo install -f wasm-bindgen-cli
-cargo build --target wasm32-unknown-unknown
-wasm-bindgen target/wasm32-unknown-unknown/debug/shakuntala-devi-trainer.wasm --out-dir shakuntala-devi-trainer  --web
+cargo build --release --target wasm32-unknown-unknown
+wasm-bindgen target/wasm32-unknown-unknown/release/shakuntala-devi-trainer.wasm --out-dir shakuntala-devi-trainer  --web
 ```
 
 ### Alternate systems for mentally calculating the day of the week for any given date. ###
