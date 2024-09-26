@@ -1,18 +1,18 @@
-use crate::gui::theme::Theme;
-
 use chrono::prelude::*;
 use enum_map::EnumMap;
 use num_traits::cast::FromPrimitive;
 
 use iced::{
-    alignment, executor,
+    alignment,
     widget::{button, column, row, text, Container, Slider},
-    Alignment, Application, Element, Length,
+    Alignment, Element, Length, Task,
 };
 
 use shakuntala_devi_trainer::{shakuntala_devi_nearest_leap_year, Tips, T2, YEARS};
 
 use crate::gui::common::Screen;
+
+use super::style::{button_day, button_start, slider_style};
 
 //Weekday does not implement Default so we can't derive Default
 #[derive(Debug, Clone)]
@@ -44,13 +44,8 @@ pub enum Message {
     SolutionMode,
 }
 
-impl Application for ShakuntalaDeviTrainer {
-    type Message = Message;
-    type Theme = Theme;
-    type Executor = executor::Default;
-    type Flags = ();
-
-    fn new(_flags: ()) -> (ShakuntalaDeviTrainer, iced::Command<Message>) {
+impl ShakuntalaDeviTrainer {
+    pub fn new() -> (ShakuntalaDeviTrainer, Task<Message>) {
         let (random_date, shakuntala_devi_answer, tips) =
             shakuntala_devi_trainer::random_date_with_tips(
                 shakuntala_devi_trainer::DEFAULT_FIRST_YEAR,
@@ -75,11 +70,11 @@ impl Application for ShakuntalaDeviTrainer {
                 },
                 start: instant::Instant::now(),
             },
-            iced::Command::none(),
+            iced::Task::none(),
         )
     }
 
-    fn title(&self) -> String {
+    pub fn title(&self) -> String {
         format!(
             "{} {}",
             "Shakuntala Devi trainer",
@@ -87,7 +82,11 @@ impl Application for ShakuntalaDeviTrainer {
         )
     }
 
-    fn update(&mut self, message: Message) -> iced::Command<Message> {
+    pub fn theme(&self) -> iced::Theme {
+        iced::Theme::Light
+    }
+
+    pub fn update(&mut self, message: Message) -> iced::Task<Message> {
         match message {
             Message::GuessDay(guess_day) => {
                 self.game_answers[usize::try_from(guess_day.number_from_monday() - 1)
@@ -193,73 +192,77 @@ impl Application for ShakuntalaDeviTrainer {
                 }
             }
         }
-        iced::Command::none()
+        iced::Task::none()
     }
 
-    fn view(&self) -> Element<Message, Theme> {
+    pub fn view(&self) -> Element<Message> {
         let reset_button = column![button(
             text("Start new game")
-                .horizontal_alignment(alignment::Horizontal::Center)
+                .align_x(alignment::Horizontal::Center)
                 .size(14),
         )
+        .style(button_start)
         .padding(8)
-        .on_press(Message::Reset)
-        .style(crate::gui::theme::Button::Start),]
+        .on_press(Message::Reset)]
         .padding(16);
 
         let menu_game = column![button(
             text("DAY TRAINING MODE")
-                .horizontal_alignment(alignment::Horizontal::Center)
+                .align_x(alignment::Horizontal::Center)
                 .size(14),
         )
         .padding(8)
         .on_press(Message::GameMode)
-        .style(if self.screen == Screen::Game {
-            crate::gui::theme::Button::MenuActive
+        .style(|theme, status| if self.screen == Screen::Game {
+            super::style::button_menu(theme, status)
         } else {
-            crate::gui::theme::Button::MenuInactive
+            super::style::button_menu_inactive(theme, status)
         }),]
         .padding(16);
 
         let menu_month_table = column![button(
             text("MONTH TABLE")
-                .horizontal_alignment(alignment::Horizontal::Center)
+                .align_x(alignment::Horizontal::Center)
                 .size(14),
         )
         .padding(8)
         .on_press(Message::TrainingMonthTableMode)
-        .style(if self.screen == Screen::TrainingMonthTable {
-            crate::gui::theme::Button::MenuActive
-        } else {
-            crate::gui::theme::Button::MenuInactive
-        }),]
+        .style(
+            |theme, status| if self.screen == Screen::TrainingMonthTable {
+                super::style::button_menu(theme, status)
+            } else {
+                super::style::button_menu_inactive(theme, status)
+            }
+        ),]
         .padding(16);
 
         let menu_year_table = column![button(
             text("YEAR TABLE")
-                .horizontal_alignment(alignment::Horizontal::Center)
+                .align_x(alignment::Horizontal::Center)
                 .size(14),
         )
         .padding(8)
         .on_press(Message::TrainingYearTableMode)
-        .style(if self.screen == Screen::TrainingYearTable {
-            crate::gui::theme::Button::MenuActive
-        } else {
-            crate::gui::theme::Button::MenuInactive
-        }),]
+        .style(
+            |theme, status| if self.screen == Screen::TrainingYearTable {
+                super::style::button_menu(theme, status)
+            } else {
+                super::style::button_menu_inactive(theme, status)
+            }
+        ),]
         .padding(16);
 
         let menu_solution = column![button(
             text("SOLUTION")
-                .horizontal_alignment(alignment::Horizontal::Center)
+                .align_x(alignment::Horizontal::Center)
                 .size(14),
         )
         .padding(8)
         .on_press(Message::SolutionMode)
-        .style(if self.screen == Screen::Solution {
-            crate::gui::theme::Button::MenuActive
+        .style(|theme, status| if self.screen == Screen::Solution {
+            super::style::button_menu(theme, status)
         } else {
-            crate::gui::theme::Button::MenuInactive
+            super::style::button_menu_inactive(theme, status)
         }),]
         .padding(16);
 
@@ -267,63 +270,42 @@ impl Application for ShakuntalaDeviTrainer {
 
         let column_weekday = |label, weekday, already_pressed| {
             column![if already_pressed {
-                button(
-                    text(label)
-                        .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(14),
-                )
-                .padding(8)
+                button(text(label).align_x(alignment::Horizontal::Center).size(14))
+                    .padding(8)
+                    .style(button_day)
             } else {
-                button(
-                    text(label)
-                        .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(14),
-                )
-                .padding(8)
-                .on_press(Message::GuessDay(weekday))
-                .style(crate::gui::theme::Button::Days)
+                button(text(label).align_x(alignment::Horizontal::Center).size(14))
+                    .padding(8)
+                    .on_press(Message::GuessDay(weekday))
+                    .style(button_day)
             }]
             .padding(1)
         };
 
         let column_t2 = |label, weekday, already_pressed| {
             column![if already_pressed {
-                button(
-                    text(label)
-                        .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(14),
-                )
-                .padding(8)
+                button(text(label).align_x(alignment::Horizontal::Center).size(14))
+                    .padding(8)
+                    .style(button_day)
             } else {
-                button(
-                    text(label)
-                        .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(14),
-                )
-                .padding(8)
-                .on_press(Message::GuessMonthTable(weekday))
-                .style(crate::gui::theme::Button::Days)
+                button(text(label).align_x(alignment::Horizontal::Center).size(14))
+                    .padding(8)
+                    .on_press(Message::GuessMonthTable(weekday))
+                    .style(button_day)
             }]
             .padding(1)
         };
 
         let column_t3 = |label, weekday, already_pressed| {
             column![if already_pressed {
-                button(
-                    text(label)
-                        .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(14),
-                )
-                .padding(8)
+                button(text(label).align_x(alignment::Horizontal::Center).size(14))
+                    .padding(8)
+                    .style(button_day)
             } else {
-                button(
-                    text(label)
-                        .horizontal_alignment(alignment::Horizontal::Center)
-                        .size(14),
-                )
-                .padding(8)
-                .on_press(Message::GuessYearTable(weekday))
-                .style(crate::gui::theme::Button::Days)
+                button(text(label).align_x(alignment::Horizontal::Center).size(14))
+                    .padding(8)
+                    .on_press(Message::GuessYearTable(weekday))
+                    .style(button_day)
             }]
             .padding(1)
         };
@@ -350,14 +332,17 @@ impl Application for ShakuntalaDeviTrainer {
             shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,
             self.first_year,
             Message::FirstYear,
-        )]
-        .padding(0);
+        )
+        .style(slider_style)]
+        .padding(0)
+        .spacing(3);
 
         let last_year_slider = column![Slider::new(
             shakuntala_devi_trainer::MIN_YEAR..=shakuntala_devi_trainer::MAX_YEAR,
             self.last_year,
             Message::LastYear,
-        )]
+        )
+        .style(slider_style)]
         .padding(0);
 
         let weekday = row![
@@ -402,43 +387,30 @@ impl Application for ShakuntalaDeviTrainer {
         let container_slider = Container::new(
             first_year_slider
                 .push(first_year)
-                .align_items(Alignment::Center)
+                .align_x(Alignment::Center)
                 .push(last_year_slider)
                 .push(last_year),
         );
 
         let game = Container::new(
             main_screen
-                .align_items(Alignment::Center)
+                .align_x(Alignment::Center)
                 .push(reset_button)
                 .push(secondary_screen)
                 .push(result),
         );
 
         let content = match self.screen {
-            Screen::Game => column![menu, container_slider, game].align_items(Alignment::Center),
-            Screen::TrainingMonthTable => column![menu, game].align_items(Alignment::Center),
-            Screen::TrainingYearTable => column![menu, game].align_items(Alignment::Center),
-            Screen::Solution => column![menu, game].align_items(Alignment::Center),
-        };
+            Screen::Game => column![menu, container_slider, game].align_x(Alignment::Center),
+            Screen::TrainingMonthTable => column![menu, game].align_x(Alignment::Center),
+            Screen::TrainingYearTable => column![menu, game].align_x(Alignment::Center),
+            Screen::Solution => column![menu, game].align_x(Alignment::Center),
+        }
+        .spacing(3);
 
         Container::new(content)
             .width(Length::Fill)
-            //.height(Length::Fill)
-            .center_x()
-            .center_y()
+            .center_x(Length::Fill)
             .into()
-    }
-
-    fn style(&self) -> <Self::Theme as iced::application::StyleSheet>::Style {
-        <Self::Theme as iced::application::StyleSheet>::Style::default()
-    }
-
-    fn subscription(&self) -> iced::Subscription<Self::Message> {
-        iced::Subscription::none()
-    }
-
-    fn scale_factor(&self) -> f64 {
-        1.0
     }
 }
