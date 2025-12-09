@@ -1,7 +1,6 @@
 use chrono::prelude::*;
 use chrono::Duration;
 use num_traits::cast::FromPrimitive;
-use rand::Rng;
 use std::fmt;
 use std::sync::LazyLock;
 use std::{
@@ -251,7 +250,7 @@ pub fn random_date(from_year: u32, to_year: u32) -> NaiveDate {
     let end = NaiveDate::from_ymd_opt(to_year.try_into().unwrap(), 1, 1)
         .unwrap()
         .num_days_from_ce();
-    let days = rand::thread_rng().gen_range(1..end - start);
+    let days = rand::random_range(1..end - start);
     let dt = NaiveDate::from_ymd_opt(from_year.try_into().unwrap(), 1, 7).unwrap();
     dt + Duration::days(days as i64)
 }

@@ -7,7 +7,7 @@ use iced::Size;
 
 pub fn run_gui() {
     let app = iced::application(
-        ShakuntalaDeviTrainer::title,
+        ShakuntalaDeviTrainer::new,
         ShakuntalaDeviTrainer::update,
         ShakuntalaDeviTrainer::view,
     )
@@ -15,6 +15,7 @@ pub fn run_gui() {
     .settings(iced::Settings {
         ..Default::default()
     })
+    .title(ShakuntalaDeviTrainer::title)
     .window(iced::window::Settings {
         size: Size::new(600f32, 350f32),
         min_size: Some(Size::new(600f32, 350f32)),
@@ -25,17 +26,11 @@ pub fn run_gui() {
                 let width = buffer.width();
                 let height = buffer.height();
                 let dynamic_image = image::DynamicImage::ImageRgba8(buffer);
-                match iced::window::icon::from_rgba(dynamic_image.into_bytes(), width, height) {
-                    Ok(icon) => Some(icon),
-                    Err(_) => None,
-                }
+                iced::window::icon::from_rgba(dynamic_image.into_bytes(), width, height).ok()
             }
             Err(_) => None,
         },
         ..Default::default()
     });
-    fn shakuntala_devi_trainer() -> (ShakuntalaDeviTrainer, iced::Task<app::Message>) {
-        ShakuntalaDeviTrainer::new()
-    }
-    app.run_with(shakuntala_devi_trainer).unwrap();
+    app.run().unwrap();
 }

@@ -27,7 +27,7 @@ pub(crate) struct ShakuntalaDeviTrainer {
     year_table_answers: [bool; 13],
     tips: Tips,
     hint: EnumMap<Screen, String>,
-    start: instant::Instant,
+    start: web_time::Instant,
 }
 
 #[derive(Debug, Clone)]
@@ -68,7 +68,7 @@ impl ShakuntalaDeviTrainer {
                     Screen::TrainingMonthTable => "Which entry is the good one ?".to_string(),
                     Screen::TrainingYearTable => "Which entry is the good one ?".to_string(),
                 },
-                start: instant::Instant::now(),
+                start: web_time::Instant::now(),
             },
             iced::Task::none(),
         )
@@ -125,7 +125,7 @@ impl ShakuntalaDeviTrainer {
                 self.game_answers = [false; 7];
                 self.month_table_answers = [false; 7];
                 self.year_table_answers = [false; 13];
-                self.start = instant::Instant::now();
+                self.start = web_time::Instant::now();
             }
 
             Message::TrainingMonthTableMode => {
@@ -195,7 +195,7 @@ impl ShakuntalaDeviTrainer {
         iced::Task::none()
     }
 
-    pub fn view(&self) -> Element<Message> {
+    pub fn view(&self) -> Element<'_, Message> {
         let reset_button = column![button(
             text("Start new game")
                 .align_x(alignment::Horizontal::Center)
