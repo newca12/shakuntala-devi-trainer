@@ -410,7 +410,9 @@ impl ShakuntalaDeviTrainer {
 
         Container::new(content)
             .width(Length::Fill)
+            .height(Length::Fill)
             .center_x(Length::Fill)
+            .style(crate::gui::style::main_container)
             .into()
     }
 }

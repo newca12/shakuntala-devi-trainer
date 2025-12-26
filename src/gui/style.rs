@@ -1,11 +1,18 @@
 use iced::{
     border::Radius,
     widget::{
-        button,
+        button, container,
         slider::{self},
     },
     Border, Color, Theme,
 };
+
+pub fn main_container(_theme: &Theme) -> container::Style {
+    container::Style {
+        background: Some(Color::from_rgb8(0xFF, 0xFE, 0xF0).into()),
+        ..Default::default()
+    }
+}
 
 pub fn rounded(theme: &Theme, status: button::Status) -> button::Style {
     let radius = Radius {
